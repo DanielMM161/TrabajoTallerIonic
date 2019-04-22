@@ -5,7 +5,8 @@ import { NologinGuard } from './guards/nologin.guard'
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', loadChildren: './pages/login/login.module#LoginPageModule', canActivate : [NologinGuard]  },
-  { path: 'menu', loadChildren: './pages/menu/menu.module#MenuPageModule', canActivate : [AuthGuard] },
+  { path: 'menu', loadChildren: './pages/menu/menu.module#MenuPageModule', canActivate : [AuthGuard] },  { path: 'formulario', loadChildren: './pages/formulario/formulario.module#FormularioPageModule' },
+
 
 
 ];
