@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { FormularioPage } from './formulario.page';
 
+
 const routes: Routes = [
   {
     path: '',

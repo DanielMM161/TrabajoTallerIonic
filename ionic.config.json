@@ -1,5 +1,7 @@
 {
   "name": "AppTaller",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }

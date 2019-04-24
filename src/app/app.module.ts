@@ -13,6 +13,9 @@ import {FirebaseConfig} from "../environments/environment"
 
 import { AngularFireModule } from "@angular/fire"
 import {AngularFireAuthModule} from "@angular/fire/auth"
+import {AngularFirestoreModule} from 'angularfire2/firestore';
+
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -21,7 +24,8 @@ import {AngularFireAuthModule} from "@angular/fire/auth"
     IonicModule.forRoot(),
     AppRoutingModule,
     AngularFireModule.initializeApp(FirebaseConfig),
-    AngularFireAuthModule
+    AngularFireAuthModule,
+    AngularFirestoreModule
   ],
   providers: [
     StatusBar,

@@ -5,5 +5,34 @@
 </ion-header>
 
 <ion-content>
+  <form>
+    <ion-item *ngFor="let c of clientes;let index = index;let u of user">
+          <ion-label position="floating">{{ c.title }}</ion-label>
 
+          <ion-input
+          [type]="c.type"
+          [name]="c.name"
+          [placeholder]="c.placeholder"
+          [(ngModel)]="u[index]" ></ion-input>
+      </ion-item>
+  </form>
+
+  <ion-header color="red">
+      <ion-toolbar>
+        <ion-title>Vehiculos</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <form>
+        <ion-item *ngFor="let cv of constantesVehiculos" >
+          <ion-label position="floating">{{ cv.title }}</ion-label>
+    
+          <ion-input
+          [type]="cv.type"
+          [name]="cv.name"
+          [placeholder]="cv.placeholder"></ion-input>
+        </ion-item>
+      </form>
+
+      <ion-button expand="full" (click)="saveTodo()">Guardar</ion-button>
 </ion-content>
