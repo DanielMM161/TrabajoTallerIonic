@@ -1,10 +1,10 @@
 import { getPriority } from 'os';
 
-export interface clientes{
-    id: string,
-    name: string,
-    calle: string,
-    cp: string,
-    nif: string,
-    email: string
+export class clientes{
+   public id: string;
+   public name: string;
+   public calle: string;
+   public cp: string;
+   public nif: string;
+   public email: string
 }

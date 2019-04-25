@@ -23,6 +23,7 @@ export class FormularioPage implements OnInit {
     };
 
 
+
   clientes: Constantes[] =[
     {
       type: 'text',
@@ -105,9 +106,10 @@ export class FormularioPage implements OnInit {
   constructor(private route: ActivatedRoute, private nav: NavController, private todoService: FireService, private loadingController: LoadingController) { }
 
   ngOnInit() {
+
   }
 
-  async saveTodo() {
+  async saveTodo(event) {
     const loading = await this.loadingController.create({
       message: 'Saving....'
     });
@@ -120,6 +122,7 @@ export class FormularioPage implements OnInit {
       });
     } else {
       this.todoService.addTodo(this.user).then(() => {
+        console.log(event);
         loading.dismiss();
         this.nav.navigateForward('/login');
       });

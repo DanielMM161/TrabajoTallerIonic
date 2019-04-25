@@ -6,14 +6,16 @@
 
 <ion-content>
   <form>
-    <ion-item *ngFor="let c of clientes;let index = index;let u of user">
+    <ion-item *ngFor="let c of clientes; let i = index">
           <ion-label position="floating">{{ c.title }}</ion-label>
 
           <ion-input
           [type]="c.type"
           [name]="c.name"
           [placeholder]="c.placeholder"
-          [(ngModel)]="u[index]" ></ion-input>
+          [(ngModel)]="user[caca]"
+          ></ion-input>
+          
       </ion-item>
   </form>
 
@@ -34,5 +36,5 @@
         </ion-item>
       </form>
 
-      <ion-button expand="full" (click)="saveTodo()">Guardar</ion-button>
+      <ion-button expand="full" (click)="saveTodo($event)">Guardar</ion-button>
 </ion-content>
