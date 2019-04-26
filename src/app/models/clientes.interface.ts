@@ -1,5 +1,3 @@
-import { getPriority } from 'os';
-
 export class clientes{
    public id: string;
    public name: string;

@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service'
 import { Router} from '@angular/router'
+import { Incidence } from 'src/app/models/incidence';
+import { Observable } from 'rxjs';
+import { IncidenceService } from 'src/app/services/incidence.service';
 
 @Component({
   selector: 'app-menu',
@@ -9,18 +12,18 @@ import { Router} from '@angular/router'
 })
 export class MenuPage implements OnInit {
 
-  constructor(public AfAuth: AuthService, private router: Router) { }
+  public incidents: Observable<Incidence[]>;
 
-  ngOnInit() {
+  constructor(public AfAuth: AuthService, private router: Router, private incidenceService: IncidenceService) { }
+
+  ngOnInit( ) {
+    this.incidents = this.incidenceService.getIncidents();
   }
 
   public OnLogOut(){
     this.AfAuth.logout();
   }
 
-  /**
-   * IrForm
-   */
   public IrForm() {
     this.router.navigate(['/formulario'])
   }

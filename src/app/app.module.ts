@@ -9,11 +9,10 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 
-import {FirebaseConfig} from "../environments/environment"
-
 import { AngularFireModule } from "@angular/fire"
 import {AngularFireAuthModule} from "@angular/fire/auth"
 import {AngularFirestoreModule} from 'angularfire2/firestore';
+import { firebase } from 'src/environments/environment';
 
 
 @NgModule({
@@ -23,7 +22,7 @@ import {AngularFirestoreModule} from 'angularfire2/firestore';
     BrowserModule,
     IonicModule.forRoot(),
     AppRoutingModule,
-    AngularFireModule.initializeApp(FirebaseConfig),
+    AngularFireModule.initializeApp(firebase),
     AngularFireAuthModule,
     AngularFirestoreModule
   ],
