@@ -15,7 +15,6 @@
           <ion-input class="form-control"
           [type]="c.type"
           [name]="c.name"
-          [placeholder]="c.placeholder"
           [(ngModel)]="user[c.name]"
           [formControlName]="c.name"
           ></ion-input>
@@ -71,8 +70,7 @@
     
           <ion-input
           [type]="cv.type"
-          [name]="cv.name"
-          [placeholder]="cv.placeholder"></ion-input>
+          [name]="cv.name"></ion-input>
         </ion-item>
       </form>
 

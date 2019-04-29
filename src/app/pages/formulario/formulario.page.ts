@@ -57,33 +57,28 @@ export class FormularioPage implements OnInit {
     {
       type: 'text',
       name: 'nif',
-      placeholder: 'Nif',
       title: 'Nif'
     },
     {
       type: 'text',
       name: 'name',
-      placeholder: 'Nombre',
       title: 'Nombre'
     },
     {
       type: 'text',
       name: 'phone',
-      placeholder: 'Telefono',
       title: 'Telefono'
 
     },
     {
       type: 'text',
       name: 'address',
-      placeholder: 'C/',
       title: 'Calle'
 
     },
     {
       type: 'text',
       name: 'email',
-      placeholder: 'Email',
       title: 'Email'
     }
   ];
@@ -93,40 +88,34 @@ export class FormularioPage implements OnInit {
     {
       type: 'text',
       name: 'matricula',
-      placeholder: 'Matricula',
       title: 'Matricula'
     },
     {
       type: 'text',
       name: 'Marca',
-      placeholder: 'Seat',
       title: 'Marca'
 
     },
     {
       type: 'text',
       name: 'modelo',
-      placeholder: 'Cordoba',
       title: 'Modelo'
 
     },
     {
       type: 'text',
       name: 'klmtr',
-      placeholder: 'Kilometros',
       title: 'Kilometros'
 
     },
     {
       type: 'text',
       name: 'color',
-      placeholder: 'Color',
       title: 'Color'
     },
     {
       type: 'text',
       name: 'anyos',
-      placeholder: 'Años',
       title: 'Años'
     }
   ];
@@ -194,6 +183,5 @@ export class FormularioPage implements OnInit {
 interface Constantes{
   type: string;
   name: string;
-  placeholder: string;
   title: string;
 }
