@@ -1,1 +1,19 @@
+.c-error {
+    background: #c51244;
+    padding: 10px;
+    size: 2em;
+    border-radius: 0;
+    position: relative; 
+    display: inline-block;
+    box-shadow: 1px 1px 1px #aaaaaa;
+    margin-top: 10px;
+  }
 
+.box {
+    width: 330px;
+    position: absolute;
+
+    
+    -webkit-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+  }

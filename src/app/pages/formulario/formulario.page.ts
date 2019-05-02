@@ -4,8 +4,12 @@ import { FireService } from '../../services/fire.service';
 import { clientes } from '../../models/clientes';
 import { NavController, LoadingController } from '@ionic/angular';
 import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
-import { Vehicles } from "../../models/vehicles";
+import { Vehicles } from '../../models/vehicles';
 import { VehiclesService } from '../../services/vehicles.service';
+import { DataService } from '../../services/data.service';
+import { Constants } from 'src/app/interfaces/Constants';
+import { stringify } from 'querystring';
+import { Observable } from 'rxjs';
 
 
 @Component({
@@ -15,12 +19,12 @@ import { VehiclesService } from '../../services/vehicles.service';
 })
 export class FormularioPage implements OnInit {
 
-  //Variable para inicializar mi formGroup(conjunto de FormControls)
-  formGroup: FormGroup;
+  // Variable para inicializar mi formGroup(conjunto de FormControls)
+  formGroupCustomers: FormGroup;
 
   formGroupVehicles: FormGroup;
 
-  user: clientes = 
+  user: clientes =
     {
       nif: '',
       name: '',
@@ -46,7 +50,7 @@ export class FormularioPage implements OnInit {
         { type: 'required', message: 'El Nombre es un dato obligatorio.' },
         { type: 'pattern', message: 'Tienes que introducir nombre y apellidos' }
       ],
-        'nif': [         
+        'nif': [
           { type: 'pattern', message: 'El Nif son 8 números y 1 letra' },
           { type: 'required', message: 'El Nif es un dato Obligatorio.' }
         ],
@@ -63,192 +67,131 @@ export class FormularioPage implements OnInit {
         ]
       };
 
-    validation_messages_vehicles = {
+  validation_messages_vehicles = {
         'enrollment': [
             { type: 'required', message: 'Introduce la matricula.' },
-            { type: 'pattern', message: 'No es un patron valido de matricula' }
+            { type: 'pattern', message: 'Introduzca una matricula correcta' }
           ],
-          'brand': [         
-            { type: 'required', message: 'El Nif es un dato Obligatorio.' },
-            { type: 'pattern', message: 'Introduce la marca. ' },
+          'brand': [
+            { type: 'required', message: 'Introduce la marca del coche' },
+            { type: 'pattern', message: 'Introduce la marca' },
           ],
           'model': [
-            { type: 'required', message: 'Introduce el modelo del coche.' },
-            { type: 'pattern', message: 'Un número de telefono tiene 9 digitos y empieza por 9,6 o 7s' }
+            { type: 'required', message: 'Introduce el modelo del coche' },
+            { type: 'pattern', message: 'Introduce un número de teléfono correcto' }
           ],
           'kilometers': [
-            { type: 'required', message: 'Introduce los kilometros.' }
+            { type: 'required', message: 'Introduce los kilometros.' },
+            { type: 'pattern', message: 'Solo números' }
           ],
           'color': [
-            { type: 'required', message: 'Introduce el color.' },
-            { type: 'pattern', message: 'Introduzca un email valido' }
+            { type: 'required', message: 'Introduce el color' }
           ],
           'age': [
-            { type: 'required', message: 'Introduce el año del coche.' },
-            { type: 'pattern', message: 'Introduzca un email valido' }
+            { type: 'required', message: 'Introduce el año del coche' },
+            { type: 'pattern', message: 'Solo números de dos cifras' }
           ]
       };
 
-  clientesConstantes: Constantes[] =[
-    {
-      type: 'text',
-      name: 'nif',
-      title: 'Nif'
-    },
-    {
-      type: 'text',
-      name: 'name',
-      title: 'Nombre'
-    },
-    {
-      type: 'text',
-      name: 'phone',
-      title: 'Telefono'
+  // En estas dos dos variables cargo los datos del json
+  constantCustomers: Observable<Constants[]>;
+  constantVehicles: Observable<Constants[]>;
 
-    },
-    {
-      type: 'text',
-      name: 'address',
-      title: 'Calle'
-
-    },
-    {
-      type: 'text',
-      name: 'email',
-      title: 'Email'
-    }
-  ];
-
-  constantesVehiculos: Constantes[] =[
-
-    {
-      type: 'text',
-      name: 'enrollment',
-      title: 'Matricula'
-    },
-    {
-      type: 'text',
-      name: 'brand',
-      title: 'Marca'
-
-    },
-    {
-      type: 'text',
-      name: 'model',
-      title: 'Modelo'
-
-    },
-    {
-      type: 'text',
-      name: 'kilometers',
-      title: 'Kilometros'
-
-    },
-    {
-      type: 'text',
-      name: 'color',
-      title: 'Color'
-    },
-    {
-      type: 'text',
-      name: 'age',
-      title: 'Años'
-    }
-  ];
- 
   /*Dentro del constructor inicializo mi FormGroup(es un conjunto de form Control) y le aplico ciertos
   parametros para validar*/
-  constructor(private route: ActivatedRoute, 
+  constructor(private route: ActivatedRoute,
     private nav: NavController, private todoService: FireService,
     private loadingController: LoadingController,
     private formBuilder: FormBuilder,
-    private vehicleService: VehiclesService) {
-      /* FormControls of customers*/ 
-      this.formGroup =  this.formBuilder.group({
-        nif: new FormControl('',Validators.compose([
-          Validators.required,
-          Validators.pattern('^[0-9]{8}[TRWAGMYFPDXBNJZSQVHLCKE]$')
-        ])),
-        name: new FormControl('',Validators.compose([
-          Validators.required,
-          Validators.pattern('^([A-Za-zÁÉÍÓÚñáéíóúÑ]{0}?[A-Za-zÁÉÍÓÚñáéíóúÑ\']+[\s])+([A-Za-zÁÉÍÓÚñáéíóúÑ]{0}?[A-Za-zÁÉÍÓÚñáéíóúÑ\'])+[\s]?([A-Za-zÁÉÍÓÚñáéíóúÑ]{0}?[A-Za-zÁÉÍÓÚñáéíóúÑ\'])?$')
-        ])),
-        phone: new FormControl('',Validators.compose([
-          Validators.required,
-          Validators.pattern('^[9|6|7][0-9]{8}$')
-        ])),
-        address: new FormControl('',Validators.compose([
-          Validators.maxLength(30),
-          Validators.minLength(30),
-          Validators.required
-        ])),
-        email: new FormControl('',Validators.compose([
-          Validators.required,
-          Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')
-        ])),
-      });
-      /* FormControls of vehicles*/ 
-      this.formGroupVehicles =  this.formBuilder.group({
-        enrollment: new FormControl('',Validators.compose([
-          Validators.required,
-          Validators.pattern('^[0-9]{8}[TRWAGMYFPDXBNJZSQVHLCKE]$')
-        ])),
-        brand: new FormControl('',Validators.compose([
-          Validators.required,
-        ])),
-        model: new FormControl('',Validators.compose([
-          Validators.required,
-          Validators.pattern('^[9|6|7][0-9]{8}$')
-        ])),
-        kilometers: new FormControl('',Validators.compose([
-          Validators.required
-        ])),
-        color: new FormControl('',Validators.compose([
-          Validators.required,
-          Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')
-        ])),
-        age: new FormControl('',Validators.compose([
-          Validators.required,
-          Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')
-        ])),
-      });
-      }
+    private vehicleService: VehiclesService,
+    private dataServie: DataService) {
+      this.buildFormGroupCustomers();
+      this.buildFormGroupVehicles();
+    }
+
+  /**
+   * Metodo en el cual creo mi FormGroup de clientes
+   */
+  buildFormGroupCustomers() {
+    this.formGroupCustomers =  this.formBuilder.group({
+      nif: new FormControl('', Validators.compose([
+        Validators.required,
+        Validators.pattern('^[0-9]{8}[TRWAGMYFPDXBNJZSQVHLCKE]$')
+      ])),
+      name: new FormControl('', Validators.compose([
+        Validators.required,
+        Validators.pattern('^([A-Za-zÁÉÍÓÚñáéíóúÑ]{0}?[A-Za-zÁÉÍÓÚñáéíóúÑ\']+[\s])+([A-Za-zÁÉÍÓÚñáéíóúÑ]{0}?[A-Za-zÁÉÍÓÚñáéíóúÑ\'])+[\s]?([A-Za-zÁÉÍÓÚñáéíóúÑ]{0}?[A-Za-zÁÉÍÓÚñáéíóúÑ\'])?$')
+      ])),
+      phone: new FormControl('', Validators.compose([
+        Validators.required,
+        Validators.pattern('^[9|6|7][0-9]{8}$')
+      ])),
+      address: new FormControl('', Validators.compose([
+        Validators.maxLength(30),
+        Validators.minLength(30),
+        Validators.required
+      ])),
+      email: new FormControl('', Validators.compose([
+        Validators.required,
+        Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')
+      ])),
+    }, { updateOn: 'blur' });
+  }
+
+  /**
+   * Metodo en el cual creo mi FormGroup de vehiculos
+   */
+  buildFormGroupVehicles() {
+    this.formGroupVehicles =  this.formBuilder.group({
+      enrollment: new FormControl('', Validators.compose([
+        Validators.required,
+        Validators.pattern('^\\d{4}[A-Z]{3}$')
+      ])),
+      brand: new FormControl('', Validators.compose([
+        Validators.required,
+      ])),
+      model: new FormControl('', Validators.compose([
+        Validators.required
+      ])),
+      kilometers: new FormControl('', Validators.compose([
+        Validators.required,
+        Validators.pattern('') // falta expresion regular
+      ])),
+      color: new FormControl('', Validators.compose([
+        Validators.required
+      ])),
+      age: new FormControl('', Validators.compose([
+        Validators.required,
+        Validators.pattern('^[0-9]{1,2}$')
+      ])),
+    }, { updateOn: 'blur' });
+  }
 
   ngOnInit() {
-
+    /*Recojo los datos del json y los guardo en estas variables*/
+    this.constantVehicles = this.dataServie.getConstantVehicles();
+    this.constantCustomers = this.dataServie.getConstantCustomers();
   }
 
   async saveTodo(event) {
     const loading = await this.loadingController.create({
       message: 'Saving....'
     });
+
     await loading.present();
- 
-    if (this.user.nif) {
-      this.todoService.updateTodo(this.user, this.user.nif).then(() => {
-        loading.dismiss();
-        this.nav.navigateForward('/login');
-      });
-    } else {
-      //Save the customers
+
+      // Save the customers
       this.todoService.addTodo(this.user).then(() => {
         console.log(event);
         loading.dismiss();
         this.nav.navigateForward('/login');
       });
-      //Save the vehicles of the customers
+      // Save the vehicles of the customers
       this.vehicleService.addVehicles(this.vehicles).then(() => {
         console.log(event);
         loading.dismiss();
         this.nav.navigateForward('/login');
       });
     }
-  }
 
-}
-
-interface Constantes{
-  type: string;
-  name: string;
-  title: string;
 }
