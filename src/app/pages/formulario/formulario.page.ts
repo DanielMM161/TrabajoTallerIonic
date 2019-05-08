@@ -10,6 +10,8 @@ import { DataService } from '../../services/data.service';
 import { Constants } from 'src/app/interfaces/Constants';
 import { stringify } from 'querystring';
 import { Observable } from 'rxjs';
+import { NgForOf } from '@angular/common';
+import { dashCaseToCamelCase } from '@angular/compiler/src/util';
 
 
 @Component({
@@ -20,9 +22,9 @@ import { Observable } from 'rxjs';
 export class FormularioPage implements OnInit {
 
   // Variable para inicializar mi formGroup(conjunto de FormControls)
-  formGroupCustomers: FormGroup;
+  public formGroupCustomers: FormGroup;
 
-  formGroupVehicles: FormGroup;
+  public formGroupVehicles: FormGroup;
 
   user: clientes =
     {
@@ -100,7 +102,8 @@ export class FormularioPage implements OnInit {
   /*Dentro del constructor inicializo mi FormGroup(es un conjunto de form Control) y le aplico ciertos
   parametros para validar*/
   constructor(private route: ActivatedRoute,
-    private nav: NavController, private todoService: FireService,
+    private nav: NavController, 
+    private todoService: FireService,
     private loadingController: LoadingController,
     private formBuilder: FormBuilder,
     private vehicleService: VehiclesService,
@@ -109,6 +112,13 @@ export class FormularioPage implements OnInit {
       this.buildFormGroupVehicles();
     }
 
+  checkNif(nif: string) {
+    this.todoService.checkNif(nif, this.user);
+  }
+
+  checkEnrollment(enrollment: string) {
+    this.vehicleService.checkEnrollment(enrollment, this.vehicles);
+  }
   /**
    * Metodo en el cual creo mi FormGroup de clientes
    */
