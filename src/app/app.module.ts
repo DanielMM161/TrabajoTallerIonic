@@ -14,6 +14,7 @@ import {AngularFireAuthModule} from "@angular/fire/auth"
 import {AngularFirestoreModule} from 'angularfire2/firestore';
 import { firebase } from 'src/environments/environment';
 import { HttpClientModule } from '@angular/common/http';
+import { DamagesService } from './services/damages.service';
 
 
 
@@ -32,6 +33,7 @@ import { HttpClientModule } from '@angular/common/http';
   providers: [
     StatusBar,
     SplashScreen,
+    DamagesService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

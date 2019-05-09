@@ -25,7 +25,11 @@ export class MenuPage implements OnInit {
   }
 
   public IrForm() {
-    this.router.navigate(['/formulario'])
+    this.router.navigate(['/formulario']);
+  }
+
+  public IrDraw() {
+    this.router.navigate(['/drawimage']);
   }
 
 }

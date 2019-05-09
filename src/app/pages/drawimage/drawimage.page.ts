@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NavController } from '@ionic/angular';
-import { Content } from '@angular/compiler/src/render3/r3_ast';
+import { DamagesService } from 'src/app/services/damages.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-drawimage',
@@ -9,7 +10,22 @@ import { Content } from '@angular/compiler/src/render3/r3_ast';
 })
 export class DrawimagePage implements OnInit {
 
+  averias = [];
   ngOnInit(): void {
+  }
+
+  constructor(public damageService: DamagesService, public route: Router){
+
+  }
+
+  recogeArray(event){
+    this.averias = event;
+    console.log(this.averias);
+  }
+
+  goDamageList( damages){
+    this.damageService.setDamages(this.averias);
+    this.route.navigate(['/damagelist']);
   }
 
 }

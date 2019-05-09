@@ -1,8 +1,7 @@
 <ion-header>
         <ion-toolbar color="secondary">
           <ion-title text-center>
-            Menu
-            <img src="assets/img/electric-car.png"/>
+            <h1>Menu<img src="assets/img/electric-car.png"/></h1>                  
           </ion-title>
           <ion-buttons slot="end">
             <ion-button (click)="OnLogOut()">
@@ -15,6 +14,11 @@
 <ion-content padding>
 
   <ion-list>
+    <ion-list-header>
+      <ion-title>
+        <h1>Partes comenzados</h1>
+      </ion-title>
+    </ion-list-header>
     <ion-item button [routerLink]="['/incidence', inc.id]" *ngFor="let inc of (incidents | async)" >
       {{ inc.id }}
     </ion-item>
@@ -22,5 +26,6 @@
 </ion-content>
 
 <ion-footer>
-  <ion-button (click)="IrForm()">Formulario  </ion-button>
+  <ion-button (click)="IrForm()"><h1>Nueva Incidencia</h1></ion-button>
+  <ion-button (click)="IrDraw()"><h1>Draw Image</h1></ion-button>
 </ion-footer>
