@@ -1,10 +1,10 @@
 <canvas #myCanvas 
 (touchstart)="handleStart($event)"
-(touchmove)="handleMove($event)"
-(touchend)="handleEnd($event)"
 height="648"
 style="border:3px solid #000000;">
 </canvas>
+<!-- (touchmove)="handleMove($event)" -->
+<!-- (touchend)="handleEnd($event)" -->
 
 <ion-button  (click)="clearAll()"> Clear</ion-button>
 
@@ -14,9 +14,9 @@ style="border:3px solid #000000;">
     </ion-list-header>
     <form [formGroup]="myForm">
         <ion-item *ngFor="let control of myForm.controls | keyvalue; let i = index">
-            <ion-label> {{ playerCount - i }} </ion-label>
-            <ion-input required type="text" [formControlName]="control.key" placeHolder="AVERIA..." [(ngModel)]="averias[i+1]"></ion-input>
-            <ion-icon (click)="removeControl(control)" name="close-circle"></ion-icon>
+            <ion-label> {{i + 1}} </ion-label>
+            <ion-input required type="text" [formControlName]="control.key" placeHolder="AVERIA..." [(ngModel)]="averias[i]"></ion-input>
+            <ion-icon size='large' *ngIf="checkValue(control.key)" (click)="removeControl(control)" name="close-circle"></ion-icon>
         </ion-item>
     </form>
 </ion-list>
