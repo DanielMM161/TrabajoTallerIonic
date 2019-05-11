@@ -26,4 +26,8 @@ export class DataService {
   getConstantCustomers(){
     return this.http.get<Constants[]>('/assets/data/ConstantCustomers.json');
   }
+
+  getValidationMessageCustomers() {
+    return this.http.get('/assets/data/ValidationMessageCustomers.json');
+  }
 }

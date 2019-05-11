@@ -33,33 +33,30 @@ export class VehiclesService {
     * Este metodo hace una consulta a la collecion Vehicles y en el caso que exista la matricula del vehiculo
     * recoge todos los datos de el
     */
-   checkEnrollment(enrollment: string, vehicle: Vehicles) {
-    const vehicleCollection = this.db.collection<Vehicles[]>('vehicles', ref => ref.where('enrollment', '==', enrollment));
-    const vehicles = vehicleCollection.snapshotChanges();
-    const pr = vehicles.subscribe(snap => {
-      if (snap.length === 0) {
-        console.log('No existe');
-        pr.unsubscribe();
-      } else {
-          console.log('Si existe', snap);
-          snap.forEach(a => {
-            vehicle.enrollment = a.payload.doc.get('enrollment');
-            vehicle.brand = a.payload.doc.get('brand');
-            vehicle.model = a.payload.doc.get('model');
-            vehicle.kilometers = a.payload.doc.get('kilometers');
-            vehicle.color = a.payload.doc.get('color');
-            vehicle.age = a.payload.doc.get('age');
-            pr.unsubscribe();
-          });
-        }
-      });
+   checkEnrollment(enrollment: string, vehicle: Vehicles, auxVehicle: Vehicles) {
+    this.db.collection('vehicles').doc(vehicle.enrollment).get().toPromise().then(res => {
+      const d = res.data();
+      vehicle.enrollment = d.enrollment;
+      vehicle.model = d.model;
+      vehicle.brand = d.brand;
+      vehicle.kilometers = d.kilometers;
+      vehicle.color = d.color;
+      vehicle.age = d.age;
+
+      auxVehicle.enrollment = d.enrollment;
+      auxVehicle.model = d.model;
+      auxVehicle.brand = d.brand;
+      auxVehicle.kilometers = d.kilometers;
+      auxVehicle.color = d.color;
+      auxVehicle.age = d.age;
+    });
    }
 
-   updateVehicles(vehicles: Vehicles, enrollment: string) {
-    return this.vehicleCollection.doc(enrollment).update(vehicles);
+   updateVehicles(vehicles: Vehicles) {
+    return this.vehicleCollection.doc(vehicles.enrollment).set(vehicles);
   }
 
    addVehicles(vehicle: Vehicles) {
-    return this.vehicleCollection.add(vehicle);
+    return this.vehicleCollection.doc(vehicle.enrollment).set({vehicle});
   }
 }

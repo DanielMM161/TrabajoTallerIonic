@@ -1,15 +1,14 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
-import { Observable, Subject, ObjectUnsubscribedError } from 'rxjs';
+import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
+import { Observable } from 'rxjs';
 import { clientes} from '../models/clientes';
 import { map } from 'rxjs/operators';
-import { switchMap } from 'rxjs/operators';
-import { addAllToArray } from '@angular/core/src/render3/util';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FireService {
+
 
   db: AngularFirestore;
   private todosCollection: AngularFirestoreCollection<clientes>;
@@ -33,26 +32,24 @@ export class FireService {
     *Este metodo me hace una consulta a la Bd y en el caso de que exista el dato deseado recoge todos los datos 
     del documento
     */
-   checkNif(nif: string, user: clientes) {
-    const usersCollection = this.db.collection<clientes[]>('clientes', ref => ref.where('nif', '==', nif));
-    const users = usersCollection.snapshotChanges();
-    const pr = users.subscribe(snap => {
-      if (snap.length === 0) {
-        console.log('No existe');
-        pr.unsubscribe();
-      } else {
-          console.log('Si existe', snap);
-          snap.forEach(a => {
-            user.nif = a.payload.doc.get('nif');
-            user.name = a.payload.doc.get('name');
-            user.phone = a.payload.doc.get('phone');
-            user.address = a.payload.doc.get('address');
-            user.email = a.payload.doc.get('email');
-            pr.unsubscribe();
-          });
-        }
-      });
-   }
+   checkNif(nif: string, user: clientes, auxUser: clientes) {
+     this.db.collection('clientes').doc(user.nif).get().toPromise().then(res => {
+      const d = res.data();
+      user.nif = d.nif;
+      user.name = d.name;
+      user.phone = d.phone;
+      user.email = d.email;
+      user.address = d.address;
+
+      auxUser.nif = d.nif;
+      auxUser.name = d.name;
+      auxUser.phone = d.phone;
+      auxUser.email = d.email;
+      auxUser.address = d.address;
+    });
+  }
+
+
    getTodos() {
      return this.todos;
    }
@@ -61,12 +58,12 @@ export class FireService {
     return this.todosCollection.doc<clientes>(id).valueChanges();
    }
 
-   updateTodo(todos: clientes, id: string){
-     return this.todosCollection.doc(id).update(todos);
+   updateTodo(todos: clientes){
+     return this.todosCollection.doc(todos.nif).set(todos);
    }
 
-   addTodo(todo: clientes){
-    return this.todosCollection.add(todo);
+   addTodo(todo: clientes) {
+    this.todosCollection.doc(todo.nif).set({todo});
    }
 
    removeTodo(id: string){

@@ -1,91 +1,54 @@
-<ion-content padding>
-  <ion-card>
-      <ion-card-header>
-          <ion-card-title>
-            <h1>CLIENTES</h1>
-          </ion-card-title>
-        </ion-card-header>
-      <form [formGroup]="formGroupCustomers">
-          <!--Por cada vuelta del ngFor compruebo mediante un ngSwitch que c.name me da nif para aplicarle el 
-          evento ionBlur solo al input que pertenece a nif ya que es quien quiero que me compruebe el dato una vez 
-          pierda el foco, los demas inputs no tienen este evento-->
-            <ion-item *ngFor="let c of constantCustomers | async">
-          
-              <ion-item [ngSwitch]="c.name">
-                <div *ngSwitchCase="'nif'">
-                    <ion-label position="floating">{{ c.title }}</ion-label>
-                    <ion-input
-                      [type]="c.type"
-                      [name]="c.name" 
-                      [(ngModel)]="user[c.name]"
-                      [formControlName]="c.name"
-                      (ionBlur)="checkNif(user[c.name])">
-                    </ion-input>
-                     <!-- Me carga los errores de validacion dependiendo del tipo de validacion,requerido,patron etc...-->
-                    <div *ngFor="let validation of validation_messages_customers.nif">
-                        <div *ngIf="formGroupCustomers.get('nif').hasError(validation.type) && (formGroupCustomers.get('nif').dirty || formGroupCustomers.get('nif').touched)">
-                          <ion-icon name="close-circle-outline"></ion-icon> {{ validation.message }}
-                        </div>
-                    </div>
-                  </div>
-                    
-                <div *ngSwitchDefault>
-                  <ion-label position="floating">{{ c.title }}</ion-label>
-                  <ion-input 
-                    [type]="c.type"
-                    [name]="c.name" 
-                    [(ngModel)]="user[c.name]"
-                    [formControlName]="c.name">
-                  </ion-input>
-                  <!-- Estos divs generados son los encargados de mostrar los mensajes de error cuando un dato 
-                  este mal introducido-->
-                      <div [ngSwitch]="c.name">
-                          <div *ngSwitchCase="'name'">
-                              <div *ngFor="let validation of validation_messages_customers.name">
-                                  <div *ngIf="formGroupCustomers.get('name').hasError(validation.type) && (formGroupCustomers.get('name').dirty || formGroupCustomers.get('name').touched)">
-                                    <ion-icon name="close-circle-outline"></ion-icon> {{ validation.message }}
-                                  </div>
-                              </div>
-                          </div>
-                          <div *ngSwitchCase="'address'">
-                              <div *ngFor="let validation of validation_messages_customers.address">
-                                  <div *ngIf="formGroupCustomers.get('address').hasError(validation.type) && (formGroupCustomers.get('address').dirty || formGroupCustomers.get('address').touched)">
-                                    <ion-icon name="close-circle-outline"></ion-icon> {{ validation.message }}
-                                  </div>
-                              </div>
-                          </div>
-                          <div *ngSwitchCase="'phone'">
-                              <div *ngFor="let validation of validation_messages_customers.phone">
-                                  <div *ngIf="formGroupCustomers.get('phone').hasError(validation.type) && (formGroupCustomers.get('phone').dirty || formGroupCustomers.get('phone').touched)">
-                                    <ion-icon name="close-circle-outline"></ion-icon> {{ validation.message }}
-                                  </div>
-                              </div>
-                          </div>
-                          <div *ngSwitchCase="'email'">
-                              <div *ngFor="let validation of validation_messages_customers.email">
-                                  <div *ngIf="formGroupCustomers.get('email').hasError(validation.type) && (formGroupCustomers.get('email').dirty || formGroupCustomers.get('email').touched)">
-                                    <ion-icon name="close-circle-outline"></ion-icon>{{ validation.message }}
-                                  </div>
-                              </div>
-                          </div>
-                         </div>
-                    </div>
-              </ion-item>     
-            </ion-item>
-        </form>
-  </ion-card>
+<ion-header>
+  <ion-toolbar>
+    <ion-title>formulario</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="formGroupCustomers">
+      <ion-item *ngFor="let c of constantCustomers | async">
+    
+        <ion-item [ngSwitch]="c.name">
+
+          <div *ngSwitchCase="'nif'">
+              <ion-label position="floating">{{ c.title }}</ion-label>
+              <ion-input
+                [type]="c.type"
+                [name]="c.name" 
+                [(ngModel)]="user[c.name]"
+                [formControlName]="c.name"
+                (ionBlur)="checkNif(user[c.name])">
+              </ion-input>
+              <div *ngIf="formGroupCustomers.get(c.name).dirty || formGroupCustomers.get(c.name).touched">
+                <span>{{ getErrorCustomers(c.name)}}</span>
+              </div>
+               
+            </div>
+              
+          <div *ngSwitchDefault>
+            <ion-label position="floating">{{ c.title }}</ion-label>
+            <ion-input 
+              [type]="c.type"
+              [name]="c.name" 
+              [(ngModel)]="user[c.name]"
+              [formControlName]="c.name">
+            </ion-input>
+            <div *ngIf="formGroupCustomers.get(c.name).dirty || formGroupCustomers.get(c.name).touched">
+              <span>{{ getErrorCustomers(c.name)}}</span>
+            </div>
+
+              </div>
+        </ion-item>     
+      </ion-item>
+  </form>
   
-  
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>
-        <h1>VEHICULOS</h1>
-      </ion-card-title>
-    </ion-card-header>
+  <ion-header color="red">
+      <ion-toolbar>
+        <ion-title>Vehiculos</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
     <form [formGroup]="formGroupVehicles">
-      <!--Por cada vuelta del ngFor compruebo mediante un ngSwitch que cv.name me da enrollment para aplicarle el 
-    evento ionBlur solo al input que pertenece a enrollment ya que es quien quiero que me compruebe el dato una vez 
-    pierda el foco, los demas inputs no tienen este evento-->
         <ion-item *ngFor="let cv of constantVehicles | async" >
             <ion-item [ngSwitch]="cv.name">
                 <div *ngSwitchCase="'enrollment'">
@@ -98,13 +61,10 @@
                       [(ngModel)]="vehicles[cv.name]"
                       (ionBlur)="checkEnrollment(vehicles[cv.name])">
                     </ion-input>
-                    <!-- Me carga los errores de validacion dependiendo del tipo de validacion,requerido,patron etc...-->
-                  <div *ngFor="let validationV of validation_messages_vehicles.enrollment">
-                      <div *ngIf="formGroupVehicles.get('enrollment').hasError(validationV.type) && (formGroupVehicles.get('enrollment').dirty || formGroupVehicles.get('enrollment').touched)">
-                        <ion-icon name="close-circle-outline"></ion-icon> {{ validationV.message }}
-                      </div>
-                  </div>
 
+                   <div *ngIf="formGroupVehicles.get(cv.name).dirty || formGroupVehicles.get(cv.name).touched"> 
+                    <span>{{getErrorVehicles(cv.name)}}</span>
+                   </div>          
                 </div>
 
                 <div *ngSwitchDefault>
@@ -116,50 +76,13 @@
                     [formControlName]="cv.name"
                     [(ngModel)]="vehicles[cv.name]">
                   </ion-input>
-                  <!-- Estos divs generados son los encargados de mostrar los mensajes de error cuando un dato 
-                  este mal introducido-->
-                  <div [ngSwitch]="cv.name">
-                    <div *ngSwitchCase="'brand'">
-                        <div *ngFor="let validationV of validation_messages_vehicles.brand">
-                            <div *ngIf="formGroupVehicles.get('brand').hasError(validationV.type) && (formGroupVehicles.get('brand').dirty || formGroupVehicles.get('brand').touched)">
-                              <ion-icon name="close-circle-outline"></ion-icon> {{ validationV.message }}
-                            </div>
-                        </div>
-                    </div>
-                    <div *ngSwitchCase="'model'">
-                        <div *ngFor="let validationV of validation_messages_vehicles.model">
-                            <div *ngIf="formGroupVehicles.get('model').hasError(validationV.type) && (formGroupVehicles.get('model').dirty || formGroupVehicles.get('model').touched)">
-                              <ion-icon name="close-circle-outline"></ion-icon> {{ validationV.message }}
-                            </div>
-                        </div>
-                    </div>
-                    <div *ngSwitchCase="'kilometers'">
-                        <div *ngFor="let validationV of validation_messages_vehicles.kilometers">
-                            <div *ngIf="formGroupVehicles.get('kilometers').hasError(validationV.type) && (formGroupVehicles.get('kilometers').dirty || formGroupVehicles.get('kilometers').touched)">
-                              <ion-icon name="close-circle-outline"></ion-icon> {{ validationV.message }}
-                            </div>
-                        </div>
-                    </div>
-                    <div *ngSwitchCase="'color'">
-                        <div *ngFor="let validationV of validation_messages_vehicles.color">
-                            <div *ngIf="formGroupVehicles.get('color').hasError(validationV.type) && (formGroupVehicles.get('color').dirty || formGroupVehicles.get('color').touched)">
-                              <ion-icon name="close-circle-outline"></ion-icon>{{ validationV.message }}
-                            </div>
-                        </div>
-                    </div>
-                    <div *ngSwitchCase="'age'">
-                      <div *ngFor="let validationV of validation_messages_vehicles.age">
-                          <div *ngIf="formGroupVehicles.get('age').hasError(validationV.type) && (formGroupVehicles.get('age').dirty || formGroupVehicles.get('age').touched)">
-                            <ion-icon name="close-circle-outline"></ion-icon>{{ validationV.message }}
-                          </div>
-                      </div>
-                  </div>
-                   </div>
+                  <div *ngIf="formGroupVehicles.get(cv.name).dirty || formGroupVehicles.get(cv.name).touched"> 
+                    <span>{{getErrorVehicles(cv.name)}}</span>
+                   </div>     
                 </div>
               </ion-item> 
         </ion-item>
       </form>
-    </ion-card>
-
-      <ion-button expand="full" (click)="saveTodo($event)">Guardar</ion-button>
+      
+      <ion-button expand="full" (click)="checkDataUser()" [disabled]="">Guardar</ion-button>
 </ion-content>

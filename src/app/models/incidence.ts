@@ -1,6 +1,5 @@
 export class Incidence {
     public id: string;
-    public car: number;
+    public idCar: string;
     public state: string;
-    public details: string;
 }

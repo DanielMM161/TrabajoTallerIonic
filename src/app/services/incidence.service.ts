@@ -1,17 +1,20 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument, DocumentReference } from '@angular/fire/firestore';
-import { map, take } from 'rxjs/operators';
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
+import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import{ Incidence} from '../models/incidence'
+import { Incidence } from '../models/incidence';
  
 @Injectable({
   providedIn: 'root'
 })
 export class IncidenceService {
+
+  private incidenceService: AngularFirestore;
   private incidents: Observable<Incidence[]>;
   private incidenceCollection: AngularFirestoreCollection<Incidence>;
- 
+
   constructor(private afs: AngularFirestore) {
+    this.incidenceService = afs;
     this.incidenceCollection = this.afs.collection<Incidence>('incidents');
     this.incidents = this.incidenceCollection.snapshotChanges().pipe(
       map(actions => {
@@ -23,30 +26,41 @@ export class IncidenceService {
       })
     );
   }
- 
-  getIncidents() {
+
+  public getIncidents() {
     return this.incidents;
   }
- 
-  getIncidence(incidence: Incidence) {
+
+  public getIncidence(incidence: Incidence) {
     return this.incidenceCollection.doc<Incidence>(incidence.id).valueChanges();
   }
- 
-  addIncidence(incidence: Incidence){
-    return this.incidenceCollection.add(incidence);
+
+  public addIncidence(incidence: Incidence) {
+    return this.incidenceCollection.doc(incidence.id).set({ incidence });
   }
- 
-  updateIncidence(incidence: Incidence) {
+
+  public updateIncidence(incidence: Incidence) {
     return this.incidenceCollection.doc(incidence.id).update(
-      { 
-        car: incidence.car,
+      {
+        car: incidence.idCar,
         state: incidence.state,
-        details: incidence.details
+        details: incidence.state
       }
     );
   }
- 
-  deleteIncidence(incidence: Incidence){
+
+  public getLengthIncidenceDoc() {
+    this.incidents.subscribe(res => {
+      console.log(res.length);
+      return res.length;
+    });
+  }
+
+  public getIncidenceService() {
+    return this.incidenceService;
+  }
+
+  public deleteIncidence(incidence: Incidence) {
     return this.incidenceCollection.doc(incidence.id).delete();
   }
 }

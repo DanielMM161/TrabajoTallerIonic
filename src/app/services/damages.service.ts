@@ -5,8 +5,10 @@ import { Injectable } from '@angular/core';
 })
 export class DamagesService {
 
-  damages= [];
-  
+ 
+  private id: string;
+  private damages = [];
+
   constructor() { }
 
   setDamages(damages){
@@ -16,5 +18,13 @@ export class DamagesService {
   getDamages(){
 
     return this.damages;
+  }
+
+  setId( id ){
+    this.id = id;
+  }
+
+  getId(){
+    return this.id;
   }
 }
