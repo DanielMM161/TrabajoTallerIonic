@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { NavController } from '@ionic/angular';
 import { DamagesService } from 'src/app/services/damages.service';
 import { Router } from '@angular/router';
 
@@ -10,12 +9,15 @@ import { Router } from '@angular/router';
 })
 export class DrawimagePage implements OnInit {
 
-  averias = [];
+  idDamage;
+  averias = [];  
+
+  constructor(public damageService: DamagesService, public route: Router){ }
+
   ngOnInit(): void {
-  }
 
-  constructor(public damageService: DamagesService, public route: Router){
-
+    this.idDamage = this.damageService.getId();
+    console.log(this.idDamage);    
   }
 
   recogeArray(event){

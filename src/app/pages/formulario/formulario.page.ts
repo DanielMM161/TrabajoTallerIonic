@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { FireService } from '../../services/fire.service';
-import { clientes } from '../../models/clientes';
+import { CustomerService } from '../../services/customer.service';
+import { Customer } from '../../models/customer';
 import { NavController, LoadingController, AlertController } from '@ionic/angular';
 import { FormGroup, FormControl, Validators, FormBuilder, NgControlStatus } from '@angular/forms';
 import { Vehicles } from '../../models/vehicles';
@@ -25,7 +25,7 @@ export class FormularioPage implements OnInit {
 
   formGroupVehicles: FormGroup;
 
-  user: clientes =
+  user: Customer =
     {
       nif: '',
       name: '',
@@ -34,7 +34,7 @@ export class FormularioPage implements OnInit {
       email: ''
   };
 
-  auxUser: clientes = {
+  auxUser: Customer = {
     nif: '',
     name: '',
     phone: '',
@@ -45,6 +45,7 @@ export class FormularioPage implements OnInit {
   vehicles: Vehicles =
   {
     enrollment: '',
+    owner: '',
     brand: '',
     model: '',
     kilometers: '',
@@ -55,6 +56,7 @@ export class FormularioPage implements OnInit {
   auxVehicles: Vehicles =
   {
     enrollment: '',
+    owner: '',
     brand: '',
     model: '',
     kilometers: '',
@@ -128,7 +130,7 @@ export class FormularioPage implements OnInit {
   parametros para validar*/
   constructor(private route: ActivatedRoute,
     private nav: NavController, 
-    private todoService: FireService,
+    private customerService: CustomerService,
     private loadingController: LoadingController,
     private formBuilder: FormBuilder,
     private vehicleService: VehiclesService,
@@ -258,8 +260,8 @@ export class FormularioPage implements OnInit {
 
   async checkDataUser() {
 
-    //this.compareDatesCustomers();
     if (this.compareDatesCustomers() || this.compareDatesVehicles()) {
+      
       const alert = await this.alertController.create({
         header: 'Actualizar Datos',
         message: 'Los datos del usuario o vehiculo han cambiado, si aceptas se actualizaran dichos datos',
@@ -322,7 +324,7 @@ export class FormularioPage implements OnInit {
   }
 
   checkNif(nif: string) {
-    this.todoService.checkNif(nif, this.user, this.auxUser);
+    this.customerService.checkNif(this.user, this.auxUser);
   }
 
   checkEnrollment(enrollment: string) {
@@ -395,7 +397,7 @@ export class FormularioPage implements OnInit {
       console.log(err)});
   }
 
-  async saveTodo(event) {
+  async saveCustomer(event) {
     const loading = await this.loadingController.create({
       message: 'Guardando....'
     });
@@ -404,7 +406,7 @@ export class FormularioPage implements OnInit {
 
       // Save the vehicles of the customers
       this.vehicleService.addVehicles(this.vehicles).then(() => {
-        this.todoService.addTodo(this.user);
+        this.customerService.addCustomer(this.user);
         this.addIncidence();
         //Guardo en el servicio la incidencia del id
         this.damagesService.setId(this.incidence.id);
@@ -426,13 +428,18 @@ export class FormularioPage implements OnInit {
         message: 'Actualizando....'
       });
       await loading.present();
-      this.todoService.updateTodo(this.user).then(() => {
+      this.customerService.updateCustomer(this.user).then(() => {
       this.vehicleService.updateVehicles(this.vehicles);
       //Guardo en el servicio la incidencia del id
         this.damagesService.setId(this.incidence.id);
         loading.dismiss();
         this.nav.navigateForward('/drawimage');
       });
+    }
+
+    continue(){
+      this.checkDataUser();
+
     }
 
 }

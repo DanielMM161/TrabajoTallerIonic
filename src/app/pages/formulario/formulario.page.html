@@ -1,88 +1,98 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>formulario</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content>
-  <form [formGroup]="formGroupCustomers">
-      <ion-item *ngFor="let c of constantCustomers | async">
-    
-        <ion-item [ngSwitch]="c.name">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        -- CLIENTE --
+      </ion-card-title>
+    </ion-card-header>
 
-          <div *ngSwitchCase="'nif'">
-              <ion-label position="floating">{{ c.title }}</ion-label>
-              <ion-input
-                [type]="c.type"
-                [name]="c.name" 
-                [(ngModel)]="user[c.name]"
-                [formControlName]="c.name"
-                (ionBlur)="checkNif(user[c.name])">
-              </ion-input>
-              <div *ngIf="formGroupCustomers.get(c.name).dirty || formGroupCustomers.get(c.name).touched">
-                <span>{{ getErrorCustomers(c.name)}}</span>
-              </div>
-               
-            </div>
-              
-          <div *ngSwitchDefault>
-            <ion-label position="floating">{{ c.title }}</ion-label>
-            <ion-input 
-              [type]="c.type"
-              [name]="c.name" 
-              [(ngModel)]="user[c.name]"
-              [formControlName]="c.name">
-            </ion-input>
-            <div *ngIf="formGroupCustomers.get(c.name).dirty || formGroupCustomers.get(c.name).touched">
-              <span>{{ getErrorCustomers(c.name)}}</span>
-            </div>
-
-              </div>
-        </ion-item>     
-      </ion-item>
-  </form>
+    <ion-card-content>
+      <form [formGroup]="formGroupCustomers">
+          <ion-item *ngFor="let c of constantCustomers | async">
+        
+            <ion-item [ngSwitch]="c.name">
   
-  <ion-header color="red">
-      <ion-toolbar>
-        <ion-title>Vehiculos</ion-title>
-      </ion-toolbar>
-    </ion-header>
+              <div *ngSwitchCase="'nif'">
+                  <ion-label position="floating">{{ c.title }}</ion-label>
+                  <ion-input
+                    [type]="c.type"
+                    [name]="c.name" 
+                    [(ngModel)]="user[c.name]"
+                    [formControlName]="c.name"
+                    (ionBlur)="checkNif(user[c.name])">
+                  </ion-input>
+                  <div *ngIf="formGroupCustomers.get(c.name).dirty || formGroupCustomers.get(c.name).touched">
+                    <span>{{ getErrorCustomers(c.name)}}</span>
+                  </div>
+                  
+                </div>
+                  
+              <div *ngSwitchDefault>
+                <ion-label position="floating">{{ c.title }}</ion-label>
+                <ion-input 
+                  [type]="c.type"
+                  [name]="c.name" 
+                  [(ngModel)]="user[c.name]"
+                  [formControlName]="c.name">
+                </ion-input>
+                <div *ngIf="formGroupCustomers.get(c.name).dirty || formGroupCustomers.get(c.name).touched">
+                  <span>{{ getErrorCustomers(c.name)}}</span>
+                </div>
+  
+                  </div>
+            </ion-item>     
+          </ion-item>
+      </form>
+    </ion-card-content>  
+  </ion-card>
+  <ion-card>
 
-    <form [formGroup]="formGroupVehicles">
-        <ion-item *ngFor="let cv of constantVehicles | async" >
-            <ion-item [ngSwitch]="cv.name">
-                <div *ngSwitchCase="'enrollment'">
-                    <ion-label position="floating">{{ cv.title }}</ion-label>
+    <ion-card-header>
+      <ion-card-title>
+        -- VEHICULO --
+      </ion-card-title>
+    </ion-card-header>
+  
+    <ion-card-content>
+      <form [formGroup]="formGroupVehicles">
+          <ion-item *ngFor="let cv of constantVehicles | async" >
+              <ion-item [ngSwitch]="cv.name">
+                  <div *ngSwitchCase="'enrollment'">
+                      <ion-label position="floating">{{ cv.title }}</ion-label>
 
-                    <ion-input
+                      <ion-input
+                        [type]="cv.type"
+                        [name]="cv.name"
+                        [formControlName]="cv.name"
+                        [(ngModel)]="vehicles[cv.name]"
+                        (ionBlur)="checkEnrollment(vehicles[cv.name])">
+                      </ion-input>
+
+                      <div *ngIf="formGroupVehicles.get(cv.name).dirty || formGroupVehicles.get(cv.name).touched"> 
+                      <span>{{getErrorVehicles(cv.name)}}</span>
+                      </div>          
+                  </div>
+
+                  <div *ngSwitchDefault>
+                      <ion-label position="floating">{{ cv.title }}</ion-label>
+
+                      <ion-input
                       [type]="cv.type"
                       [name]="cv.name"
                       [formControlName]="cv.name"
-                      [(ngModel)]="vehicles[cv.name]"
-                      (ionBlur)="checkEnrollment(vehicles[cv.name])">
+                      [(ngModel)]="vehicles[cv.name]">
                     </ion-input>
-
-                   <div *ngIf="formGroupVehicles.get(cv.name).dirty || formGroupVehicles.get(cv.name).touched"> 
-                    <span>{{getErrorVehicles(cv.name)}}</span>
-                   </div>          
-                </div>
-
-                <div *ngSwitchDefault>
-                    <ion-label position="floating">{{ cv.title }}</ion-label>
-
-                    <ion-input
-                    [type]="cv.type"
-                    [name]="cv.name"
-                    [formControlName]="cv.name"
-                    [(ngModel)]="vehicles[cv.name]">
-                  </ion-input>
-                  <div *ngIf="formGroupVehicles.get(cv.name).dirty || formGroupVehicles.get(cv.name).touched"> 
-                    <span>{{getErrorVehicles(cv.name)}}</span>
-                   </div>     
-                </div>
-              </ion-item> 
-        </ion-item>
-      </form>
+                    <div *ngIf="formGroupVehicles.get(cv.name).dirty || formGroupVehicles.get(cv.name).touched"> 
+                      <span>{{getErrorVehicles(cv.name)}}</span>
+                      </div>     
+                  </div>
+                </ion-item> 
+          </ion-item>
+        </form>
+    </ion-card-content>
+  </ion-card>
       
-      <ion-button expand="full" (click)="checkDataUser()" [disabled]="">Guardar</ion-button>
+      <ion-button expand="full" (click)="continue()">
+        <h1>CONTINUAR</h1>
+      </ion-button>
 </ion-content>

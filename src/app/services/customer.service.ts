@@ -1,23 +1,23 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
 import { Observable } from 'rxjs';
-import { clientes} from '../models/clientes';
+import { Customer} from '../models/customer';
 import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
-export class FireService {
+export class CustomerService {
 
 
   db: AngularFirestore;
-  private todosCollection: AngularFirestoreCollection<clientes>;
-  private todos: Observable<clientes[]>;
+  private customerCollection: AngularFirestoreCollection<Customer>;
+  private customer: Observable<Customer[]>;
 
   constructor(db: AngularFirestore) {
     this.db = db;
-    this.todosCollection = db.collection<clientes>('clientes');
-    this.todos = this.todosCollection.snapshotChanges().pipe(map(
+    this.customerCollection = db.collection<Customer>('clientes');
+    this.customer = this.customerCollection.snapshotChanges().pipe(map(
       actions => {
         return actions.map(a => {
           const data = a.payload.doc.data();
@@ -29,10 +29,10 @@ export class FireService {
    }
 
    /**
-    *Este metodo me hace una consulta a la Bd y en el caso de que exista el dato deseado recoge todos los datos 
+    *Este metodo me hace una consulta a la Bd y en el caso de que exista el dato deseado recoge customer los datos 
     del documento
     */
-   checkNif(nif: string, user: clientes, auxUser: clientes) {
+   checkNif( user: Customer, auxUser: Customer) {
      this.db.collection('clientes').doc(user.nif).get().toPromise().then(res => {
       const d = res.data();
       user.nif = d.nif;
@@ -50,24 +50,24 @@ export class FireService {
   }
 
 
-   getTodos() {
-     return this.todos;
+   getCustomers() {
+     return this.customer;
    }
 
-   getTodo(id: string){
-    return this.todosCollection.doc<clientes>(id).valueChanges();
+   getCustomer(id: string){
+    return this.customerCollection.doc<Customer>(id).valueChanges();
    }
 
-   updateTodo(todos: clientes){
-     return this.todosCollection.doc(todos.nif).set(todos);
+   updateCustomer(customer: Customer){
+     return this.customerCollection.doc(customer.nif).set(customer);
    }
 
-   addTodo(todo: clientes) {
-    this.todosCollection.doc(todo.nif).set({todo});
+   addCustomer(todo: Customer) {
+    this.customerCollection.doc(todo.nif).set({todo});
    }
 
-   removeTodo(id: string){
-    return this.todosCollection.doc(id).delete();
+   removeCustomer(id: string){
+    return this.customerCollection.doc(id).delete();
    }
 
 }
