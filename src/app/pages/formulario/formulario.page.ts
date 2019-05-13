@@ -312,6 +312,10 @@ export class FormularioPage implements OnInit {
                 console.log("modificar fallo");
                 break;
              }
+             
+             this.addIncidence();
+
+             this.router.navigate(['/drawimage']);
            }
          }
        ]
@@ -503,12 +507,10 @@ export class FormularioPage implements OnInit {
 
         if(numberOp != 0){
           this.checkUpdate(numberOp);
-        }        
-        
-        this.addIncidence();
-
-        this.router.navigate(['/drawimage']);
-
+        }else{
+          this.addIncidence();
+          this.router.navigate(['/drawimage']);
+        }    
       }
     }
 
