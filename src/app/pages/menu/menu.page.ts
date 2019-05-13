@@ -18,12 +18,12 @@ export class MenuPage implements OnInit {
 
   ngOnInit( ) {
     this.incidenceService.getAllIncidence().subscribe(data => {
-      this.incidenceArray = data.map(e => {
+    /*  this.incidenceArray = data.map(e => {
         return {
           id: e.payload.doc.id,
           ...e.payload.doc.data()
         } as Incidence;
-      })
+      })*/
     });
   }
 

@@ -138,7 +138,7 @@ export class FormularioPage implements OnInit {
           id: custData.payload.doc.id,
           data :custData.payload.doc.data()
         });
-      })
+      });
     });
 
     this.vehicleService.getAllVehicle().subscribe((vehSnapshot) => {
@@ -160,14 +160,19 @@ export class FormularioPage implements OnInit {
         });
       })
     });
-    
-
     /*Recojo los datos del json y los guardo en estas variables*/
     this.constantVehicles = this.dataService.getConstantVehicles();
     this.constantCustomers = this.dataService.getConstantCustomers();
 
-    
     //COMPROBAR BIEN DATOS - JSON ERROR MESSAGE
+  }
+
+  getNifExist(){
+    this.customerService.checkNif(this.customer);
+  }
+
+  getVehiclesExist() {
+    this.vehicleService.checkEnrollment(this.vehicle);
   }
 
   public getErrorCustomers(controlName: string): string {
@@ -467,8 +472,8 @@ export class FormularioPage implements OnInit {
     continue(){
       console.log(this.customerArray);
       if(this.checkEmptyCustomer() && this.checkEmptyVehicle()){
-        let opcionC: string = this.checkUser();     
-        let numberOp: number = 0; 
+        let opcionC: string = this.checkUser();
+        let numberOp: number = 0;
 
         switch(opcionC){
           case "crear":
@@ -503,7 +508,7 @@ export class FormularioPage implements OnInit {
 
         if(numberOp != 0){
           this.checkUpdate(numberOp);
-        }        
+        }
         
         this.addIncidence();
 

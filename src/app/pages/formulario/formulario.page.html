@@ -5,6 +5,7 @@
         -- CLIENTE --
       </ion-card-title>
     </ion-card-header>
+    
 
     <ion-card-content>
       <form [formGroup]="formGroupCustomers">
@@ -18,7 +19,8 @@
                     [type]="c.type"
                     [name]="c.name" 
                     [(ngModel)]="customer[c.name]"
-                    [formControlName]="c.name">
+                    [formControlName]="c.name"
+                    (ionBlur)="getNifExist()">
                   </ion-input>
                   <div *ngIf="formGroupCustomers.get(c.name).dirty || formGroupCustomers.get(c.name).touched">
                     <span>{{ getErrorCustomers(c.name)}}</span>
@@ -63,7 +65,8 @@
                         [type]="cv.type"
                         [name]="cv.name"
                         [formControlName]="cv.name"
-                        [(ngModel)]="vehicle[cv.name]">
+                        [(ngModel)]="vehicle[cv.name]"
+                        (ionBlur)="getVehiclesExist()">
                       </ion-input>
 
                       <div *ngIf="formGroupVehicles.get(cv.name).dirty || formGroupVehicles.get(cv.name).touched"> 

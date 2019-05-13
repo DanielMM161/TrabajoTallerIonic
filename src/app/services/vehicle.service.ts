@@ -11,20 +11,35 @@ export class VehicleService {
 
   constructor(private firestore: AngularFirestore) {   }
 
+  checkEnrollment(vehicle: Vehicle) {
+    const usersCollection = this.firestore.collection('vehicles').doc(vehicle.enrollment).get().toPromise().then(function(data){
+      if(data.exists){
+        vehicle.enrollment = data.get('enrollment');
+        vehicle.brand = data.get('brand');
+        vehicle.model = data.get('model');
+        vehicle.kilometers = data.get('kilometers');
+        vehicle.color = data.get('color');
+        vehicle.year = data.get('year');
+      } else{
+        console.log('no existe');
+      }
+    });
+   }
+
   getAllVehicle() {
     return this.firestore.collection('vehicles').snapshotChanges();
   }
 
-  getVehicle(vehicleId: string){
-    return this.firestore.collection('customers').doc(vehicleId).snapshotChanges();
+  getVehicle(vehicle: Vehicle){
+    return this.firestore.collection('customers').doc(vehicle.enrollment).snapshotChanges();
   }
 
   createVehicle(vehicle: Vehicle){
-    return this.firestore.collection('vehicles').add(vehicle);
+    return this.firestore.collection('vehicles').doc(vehicle.enrollment).set(vehicle);
   }
 
   updateVehicle(vehicle: Vehicle, vehicleId){
-    this.firestore.collection('vehicles').doc(vehicleId).set(vehicle);
+    this.firestore.collection('vehicles').doc(vehicle.enrollment).set(vehicle);
   }
   
 }
