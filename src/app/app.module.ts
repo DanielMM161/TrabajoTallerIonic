@@ -9,10 +9,12 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 
-import { AngularFireModule } from "@angular/fire"
+import { AngularFireModule} from 'angularfire2'
+import { AngularFireDatabaseModule } from 'angularfire2/database'
+
 import {AngularFireAuthModule} from "@angular/fire/auth"
 import {AngularFirestoreModule} from 'angularfire2/firestore';
-import { firebase } from 'src/environments/environment';
+import { environment } from 'src/environments/environment';
 import { HttpClientModule } from '@angular/common/http';
 import { DamagesService } from './services/damages.service';
 
@@ -22,10 +24,11 @@ import { DamagesService } from './services/damages.service';
   declarations: [AppComponent],
   entryComponents: [],
   imports: [
-    BrowserModule,
+    BrowserModule,    
     IonicModule.forRoot(),
     AppRoutingModule,
-    AngularFireModule.initializeApp(firebase),
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireDatabaseModule,
     AngularFireAuthModule,
     AngularFirestoreModule,
     HttpClientModule

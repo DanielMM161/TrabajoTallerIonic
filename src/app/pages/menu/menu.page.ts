@@ -12,12 +12,19 @@ import { IncidenceService } from 'src/app/services/incidence.service';
 })
 export class MenuPage implements OnInit {
 
-  public incidents: Observable<Incidence[]>;
+  public incidenceArray: Incidence[];
 
   constructor(public AfAuth: AuthService, private router: Router, private incidenceService: IncidenceService) { }
 
   ngOnInit( ) {
-    this.incidents = this.incidenceService.getIncidents();
+    this.incidenceService.getAllIncidence().subscribe(data => {
+      this.incidenceArray = data.map(e => {
+        return {
+          id: e.payload.doc.id,
+          ...e.payload.doc.data()
+        } as Incidence;
+      })
+    });
   }
 
   public OnLogOut(){

@@ -29,7 +29,7 @@
     },
     {
       "type": "text",
-      "name": "age",
-      "title": "Años"
+      "name": "year",
+      "title": "Año"
     }
   ]

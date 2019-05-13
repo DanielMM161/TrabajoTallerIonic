@@ -1,17 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CustomerService } from '../../services/customer.service';
 import { Customer } from '../../models/customer';
 import { NavController, LoadingController, AlertController } from '@ionic/angular';
 import { FormGroup, FormControl, Validators, FormBuilder, NgControlStatus } from '@angular/forms';
-import { Vehicles } from '../../models/vehicles';
-import { VehiclesService } from '../../services/vehicles.service';
+import { VehicleService } from '../../services/vehicle.service';
 import { DataService } from '../../services/data.service';
 import { Constants } from 'src/app/interfaces/Constants';
 import { Observable } from 'rxjs';
 import { IncidenceService } from '../../services/incidence.service';
 import { Incidence } from '../../models/incidence';
 import { DamagesService } from '../../services/damages.service';
+import { Vehicle } from 'src/app/models/vehicle';
 
 @Component({
   selector: 'app-formulario',
@@ -25,50 +25,32 @@ export class FormularioPage implements OnInit {
 
   formGroupVehicles: FormGroup;
 
-  user: Customer =
-    {
-      nif: '',
-      name: '',
-      phone: '',
-      address: '',
-      email: ''
-  };
-
-  auxUser: Customer = {
+  customer: Customer = {
     nif: '',
-    name: '',
-    phone: '',
+    name: '', 
+    phone: '', 
     address: '',
     email: ''
   };
 
-  vehicles: Vehicles =
-  {
+  vehicle: Vehicle = {
     enrollment: '',
-    owner: '',
     brand: '',
     model: '',
     kilometers: '',
     color: '',
-    age: ''
-  };
-
-  auxVehicles: Vehicles =
-  {
-    enrollment: '',
-    owner: '',
-    brand: '',
-    model: '',
-    kilometers: '',
-    color: '',
-    age: ''
+    year:'',
+    owner: ''
   };
 
   incidence: Incidence = {
-     id: '',
-     idCar: '',
-     state: '',
+    idInc: '',
+    idCar: '', 
+    state: ''
   };
+
+  customerDoc;
+  vehicleDoc;
 
     /*Estos son los mensajes de error que saldran si el usuario inserta un dato incorrecto,
       Dependiendo del dato mal introducido saltara un mensaje u otro.*/
@@ -113,7 +95,7 @@ export class FormularioPage implements OnInit {
           'color': [
             { type: 'required', message: 'Introduce el color' }
           ],
-          'age': [
+          'year': [
             { type: 'required', message: 'Introduce el año del coche' },
             { type: 'pattern', message: 'Solo números de dos cifras' }
           ]
@@ -125,6 +107,9 @@ export class FormularioPage implements OnInit {
 
   constantMessagesErrors: Observable<Object>;
 
+  customerArray = [];
+  vehicleArray = [];
+  incidenceArray = [];
 
   /*Dentro del constructor inicializo mi FormGroup(es un conjunto de form Control) y le aplico ciertos
   parametros para validar*/
@@ -133,23 +118,56 @@ export class FormularioPage implements OnInit {
     private customerService: CustomerService,
     private loadingController: LoadingController,
     private formBuilder: FormBuilder,
-    private vehicleService: VehiclesService,
-    private dataServie: DataService,
+    private vehicleService: VehicleService,
+    private dataService: DataService,
     public alertController: AlertController,
     public incidenceService: IncidenceService,
-    public damagesService: DamagesService) {
+    public damagesService: DamagesService,
+    public router: Router) {
       this.buildFormGroupCustomers();
       this.buildFormGroupVehicles();
   }
 
   ngOnInit() {
-    /*Recojo los datos del json y los guardo en estas variables*/
-    this.constantVehicles = this.dataServie.getConstantVehicles();
-    this.constantCustomers = this.dataServie.getConstantCustomers();
+    //set data to arrays
 
+    this.customerService.getAllCustomer().subscribe((custSnapshot) => {
+      this.customerArray = [];
+      custSnapshot.forEach((custData: any)=> {
+        this.customerArray.push({
+          id: custData.payload.doc.id,
+          data :custData.payload.doc.data()
+        });
+      })
+    });
+
+    this.vehicleService.getAllVehicle().subscribe((vehSnapshot) => {
+      this.vehicleArray = [];
+      vehSnapshot.forEach((vehData: any)=> {
+        this.vehicleArray.push({
+          id: vehData.payload.doc.id,
+          data: vehData.payload.doc.data()
+        });
+      })
+    });
+
+    this.incidenceService.getAllIncidence().subscribe((incSnapshot) => {
+      this.incidenceArray = [];
+      incSnapshot.forEach((incData: any)=> {
+        this.incidenceArray.push({
+          id: incData.payload.doc.id,
+          data :incData.payload.doc.data()
+        });
+      })
+    });
+    
+
+    /*Recojo los datos del json y los guardo en estas variables*/
+    this.constantVehicles = this.dataService.getConstantVehicles();
+    this.constantCustomers = this.dataService.getConstantCustomers();
+
+    
     //COMPROBAR BIEN DATOS - JSON ERROR MESSAGE
-    //this.constantMessagesErrors = this.dataServie.getValidationMessageCustomers();
-    this.getSizeIncidents();
   }
 
   public getErrorCustomers(controlName: string): string {
@@ -239,15 +257,15 @@ export class FormularioPage implements OnInit {
         break;
       }
       case 'color': {
-        this.validation_messages_vehicles.age.forEach( res => {
+        this.validation_messages_vehicles.year.forEach( res => {
           if (control.hasError(res.type)) {
               error = res.message;
           }
         });
         break;
       }
-      case 'age': {
-        this.validation_messages_vehicles.age.forEach( res => {
+      case 'year': {
+        this.validation_messages_vehicles.year.forEach( res => {
           if (control.hasError(res.type)) {
               error = res.message;
           }
@@ -258,43 +276,58 @@ export class FormularioPage implements OnInit {
     return error;
   }
 
-  async checkDataUser() {
+  async checkUpdate(number: number) {
 
-    if (this.compareDatesCustomers() || this.compareDatesVehicles()) {
-      
-      const alert = await this.alertController.create({
-        header: 'Actualizar Datos',
-        message: 'Los datos del usuario o vehiculo han cambiado, si aceptas se actualizaran dichos datos',
-        buttons: [
-          {
-            text: 'Cancelar',
-            role: 'cancelar',
-            cssClass: 'secondary',
-            handler: (blah) => {
+     const alert = await this.alertController.create({
+       header: 'Actualizar Datos',
+       message: 'Los datos del usuario o vehiculo han cambiado, si aceptas se actualizaran dichos datos',
+       buttons: [
+         {
+           text: 'Cancelar',
+           role: 'cancelar',
+           cssClass: 'secondary',
+           handler: () => { 
+             return;
+           }
+         }, {
+           text: 'Aceptar',
+           role: 'aceptar',
+           cssClass: 'primary',
+           handler: () => {
+             switch(number){
+               case 1:
+                this.customerService.updateCustomer(this.customer, this.customerDoc);
+                break;
 
-            }
-          }, {
-            text: 'Aceptar',
-            role: 'aceptar',
-            cssClass: 'primary',
-            handler: () => {
-              this.updateDates();
-            }
-          }
-        ]
-      });
-      await alert.present();
-    }
+              case 2: 
+                this.vehicleService.updateVehicle(this.vehicle, this.vehicleDoc);
+                break;
+
+              case 3:
+                this.customerService.updateCustomer(this.customer, this.customerDoc);
+                this.vehicleService.updateVehicle(this.vehicle, this.vehicleDoc);
+                break;
+
+              default:
+                console.log("modificar fallo");
+                break;
+             }
+           }
+         }
+       ]
+     });
+     await alert.present();
+    
   }
 
-  compareDatesCustomers(): Boolean {
+ checkEmptyCustomer(): Boolean {
     let diferent: Boolean;
     //Si son diferententes se le asigna un true afirmando que se cambiaron datos
-    if (this.auxUser.phone !== this.user.phone) {
+    if (this.customer.phone !== '' ) {
       diferent = true;
-    } else if (this. auxUser.email !== this.user.email) {
+    } else if (this. customer.email !== '') {
       diferent = true;
-    } else if (this.auxUser.address !== this.user.address) {
+    } else if (this.customer.address !== '') {
       diferent = true;
     } else {
       diferent = false;
@@ -302,19 +335,19 @@ export class FormularioPage implements OnInit {
     return diferent;
   }
 
-  compareDatesVehicles(): Boolean {
+  checkEmptyVehicle(): Boolean {
     let diferent: Boolean;
-    if (this.auxVehicles.enrollment !== this.vehicles.enrollment) {
+    if (this.vehicle.enrollment != '') {
       diferent = true;
-    } else if (this.auxVehicles.brand !== this.vehicles.brand) {
+    } else if (this.vehicle.brand != '') {
       diferent = true;
-    } else if (this.auxVehicles.model !== this.vehicles.model) {
+    } else if (this.vehicle.model != '') {
       diferent = true;
-    } else if (this.auxVehicles.kilometers !== this.vehicles.kilometers) {
+    } else if (this.vehicle.kilometers != '') {
       diferent = true;
-    } else if (this.auxVehicles.color !== this.vehicles.color) {
+    } else if (this.vehicle.color != '') {
       diferent = true;
-    } else if (this.auxVehicles.age !== this.vehicles.age) {
+    } else if (this.vehicle.year != '') {
       diferent = true;
     } else {
       diferent = false;
@@ -323,13 +356,6 @@ export class FormularioPage implements OnInit {
     return diferent;
   }
 
-  checkNif(nif: string) {
-    this.customerService.checkNif(this.user, this.auxUser);
-  }
-
-  checkEnrollment(enrollment: string) {
-    this.vehicleService.checkEnrollment(enrollment, this.vehicles,this.auxVehicles);
-  }
   /**
    * Metodo en el cual creo mi FormGroup de clientes
    */
@@ -380,66 +406,110 @@ export class FormularioPage implements OnInit {
       color: new FormControl('', Validators.compose([
         Validators.required
       ])),
-      age: new FormControl('', Validators.compose([
+      year: new FormControl('', Validators.compose([
         Validators.required,
         Validators.pattern('^[0-9]{1,2}$')
       ])),
     }, { updateOn: 'blur' });
   }
 
-  public getSizeIncidents() {
-    this.incidenceService.getIncidenceService().collection('incidents').get().toPromise().then((res) => {
-      const size = res.size + 1;
-      this.incidence.id = size.toString();
-        console.log(this.incidence.id);
-      })
-      .catch(err => {
-      console.log(err)});
-  }
-
-  async saveCustomer(event) {
-    const loading = await this.loadingController.create({
-      message: 'Guardando....'
-    });
-
-    await loading.present();
-
-      // Save the vehicles of the customers
-      this.vehicleService.addVehicles(this.vehicles).then(() => {
-        this.customerService.addCustomer(this.user);
-        this.addIncidence();
-        //Guardo en el servicio la incidencia del id
-        this.damagesService.setId(this.incidence.id);
-        console.log(event);
-        loading.dismiss();
-        this.nav.navigateForward('/drawimage');
-      });
-    }
-
   async addIncidence () {
-    this.incidence.idCar = this.vehicles.enrollment;
+    this.incidence.idInc = String(this.incidenceArray.length + 1);
+    this.incidence.idCar = this.vehicle.enrollment;
     this.incidence.state = 'peritando';
 
-    this.incidenceService.addIncidence(this.incidence);
+    this.damagesService.setId(this.incidence.idInc);
+
+    this.incidenceService.createIncidence(this.incidence);
   }
 
-  async updateDates() {
-      const loading = await this.loadingController.create({
-        message: 'Actualizando....'
-      });
-      await loading.present();
-      this.customerService.updateCustomer(this.user).then(() => {
-      this.vehicleService.updateVehicles(this.vehicles);
-      //Guardo en el servicio la incidencia del id
-        this.damagesService.setId(this.incidence.id);
-        loading.dismiss();
-        this.nav.navigateForward('/drawimage');
-      });
+    checkUser() : string {
+      let resp: string = "crear";
+      for(let cus of this.customerArray){
+        if(this.customer.nif == cus.data.nif){
+          if(this.customer.name != cus.data.name ||
+             this.customer.phone != cus.data.phone ||
+             this.customer.email != cus.data.email ||
+             this.customer.address != cus.data.address){
+              this.customerDoc = cus.id;
+              return resp = "modificar";
+          }else{
+            resp = "igual";
+          }
+        }
+      }
+      console.log(resp);
+      return resp;
+    }
+
+    checkVehicle() : string {
+      let resp: string = "crear";
+
+      for(let veh of this.vehicleArray){
+        if(this.vehicle.enrollment == veh.data.enrollment){
+          if(this.vehicle.brand != veh.data.brand ||
+             this.vehicle.model != veh.data.model ||
+             this.vehicle.kilometers != veh.data.kilometers ||
+             this.vehicle.color != veh.data.color ||
+             this.vehicle.year != veh.data.year){
+              this.vehicleDoc = veh.id;
+              return "modificar";
+          }else{
+            console.log("igual");
+            resp = "igual";
+          }
+        }
+      }
+
+      return resp;
     }
 
     continue(){
-      this.checkDataUser();
+      console.log(this.customerArray);
+      if(this.checkEmptyCustomer() && this.checkEmptyVehicle()){
+        let opcionC: string = this.checkUser();     
+        let numberOp: number = 0; 
 
+        switch(opcionC){
+          case "crear":
+            this.customerService.createCustomer(this.customer);
+            break;
+
+          case "modificar":
+            numberOp = numberOp + 1;
+            break;
+
+          case "igual":
+            console.log(opcionC);
+            break;
+        }
+        let opcionV: string = this.checkVehicle();
+
+        switch(opcionV){
+          case "crear":
+            this.vehicle.owner = this.customer.nif;
+            this.vehicleService.createVehicle(this.vehicle);
+            break;
+
+          case "modificar":
+            this.vehicle.owner = this.customer.nif;
+            numberOp = numberOp + 2;
+            break;
+
+          case "igual":
+            console.log(opcionV);
+            break;
+        }
+
+        if(numberOp != 0){
+          this.checkUpdate(numberOp);
+        }        
+        
+        this.addIncidence();
+
+        this.router.navigate(['/drawimage']);
+
+      }
     }
 
 }

@@ -17,9 +17,8 @@
                   <ion-input
                     [type]="c.type"
                     [name]="c.name" 
-                    [(ngModel)]="user[c.name]"
-                    [formControlName]="c.name"
-                    (ionBlur)="checkNif(user[c.name])">
+                    [(ngModel)]="customer[c.name]"
+                    [formControlName]="c.name">
                   </ion-input>
                   <div *ngIf="formGroupCustomers.get(c.name).dirty || formGroupCustomers.get(c.name).touched">
                     <span>{{ getErrorCustomers(c.name)}}</span>
@@ -32,7 +31,7 @@
                 <ion-input 
                   [type]="c.type"
                   [name]="c.name" 
-                  [(ngModel)]="user[c.name]"
+                  [(ngModel)]="customer[c.name]"
                   [formControlName]="c.name">
                 </ion-input>
                 <div *ngIf="formGroupCustomers.get(c.name).dirty || formGroupCustomers.get(c.name).touched">
@@ -64,8 +63,7 @@
                         [type]="cv.type"
                         [name]="cv.name"
                         [formControlName]="cv.name"
-                        [(ngModel)]="vehicles[cv.name]"
-                        (ionBlur)="checkEnrollment(vehicles[cv.name])">
+                        [(ngModel)]="vehicle[cv.name]">
                       </ion-input>
 
                       <div *ngIf="formGroupVehicles.get(cv.name).dirty || formGroupVehicles.get(cv.name).touched"> 
@@ -80,7 +78,7 @@
                       [type]="cv.type"
                       [name]="cv.name"
                       [formControlName]="cv.name"
-                      [(ngModel)]="vehicles[cv.name]">
+                      [(ngModel)]="vehicle[cv.name]">
                     </ion-input>
                     <div *ngIf="formGroupVehicles.get(cv.name).dirty || formGroupVehicles.get(cv.name).touched"> 
                       <span>{{getErrorVehicles(cv.name)}}</span>
@@ -92,7 +90,7 @@
     </ion-card-content>
   </ion-card>
       
-      <ion-button expand="full" (click)="continue()">
+      <ion-button expand="full" (click)="continue()" [disabled]="">
         <h1>CONTINUAR</h1>
       </ion-button>
 </ion-content>

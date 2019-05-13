@@ -18,7 +18,7 @@
     <ion-card-title>PARTES ABIERTOS</ion-card-title>
   </ion-card-header>
   <ion-list>
-    <ion-item *ngFor="let inc of (incidents | async)" >
+    <ion-item *ngFor="let inc of incidenceArray" >
       {{ inc.id }}
     </ion-item>
   </ion-list>
