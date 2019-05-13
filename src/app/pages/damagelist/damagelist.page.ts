@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DamagesService } from 'src/app/services/damages.service';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
@@ -14,7 +14,7 @@ export class DamagelistPage implements OnInit {
   public count = 0;
   public myForm: FormGroup;
 
-  constructor(public damageService: DamagesService, private formBuilder: FormBuilder) { 
+  constructor(public damageService: DamagesService, private formBuilder: FormBuilder, private route: Router) { 
     this.myForm = formBuilder.group({
 
     });
@@ -33,6 +33,11 @@ export class DamagelistPage implements OnInit {
 
   removeControl(control){
     this.myForm.removeControl(control.key);
+  }
+
+  goSummary( ){
+    this.damageService.setDamages(this.averias);
+    this.route.navigate(['/summary']);
   }
 
 }

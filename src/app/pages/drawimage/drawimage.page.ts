@@ -18,6 +18,7 @@ export class DrawimagePage implements OnInit {
 
     this.idDamage = this.damageService.getId();
     console.log(this.idDamage);    
+    console.log('objeto', this.damageService);
   }
 
   recogeArray(event){
@@ -25,7 +26,7 @@ export class DrawimagePage implements OnInit {
     console.log(this.averias);
   }
 
-  goDamageList( damages){
+  goDamageList( ){
     this.damageService.setDamages(this.averias);
     this.route.navigate(['/damagelist']);
   }

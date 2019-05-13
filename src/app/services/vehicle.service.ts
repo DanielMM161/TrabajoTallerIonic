@@ -31,7 +31,7 @@ export class VehicleService {
   }
 
   getVehicle(vehicle: Vehicle){
-    return this.firestore.collection('customers').doc(vehicle.enrollment).snapshotChanges();
+    return this.firestore.collection('vehicles').doc(vehicle.enrollment).snapshotChanges();
   }
 
   createVehicle(vehicle: Vehicle){

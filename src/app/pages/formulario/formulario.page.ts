@@ -383,7 +383,7 @@ export class FormularioPage implements OnInit {
       ])),
       address: new FormControl('', Validators.compose([
         Validators.maxLength(30),
-        Validators.minLength(30),
+        Validators.minLength(0),
         Validators.required
       ])),
       email: new FormControl('', Validators.compose([
@@ -428,11 +428,13 @@ export class FormularioPage implements OnInit {
     this.incidence.state = 'peritando';
 
     this.damagesService.setId(this.incidence.idInc);
+    this.damagesService.setCustomer(this.customer);
+    this.damagesService.setVehicle(this.vehicle);
 
     this.incidenceService.createIncidence(this.incidence);
   }
 
-    checkUser() : string {
+    checkCustomer() : string {
       let resp: string = "crear";
       for(let cus of this.customerArray){
         if(this.customer.nif == cus.data.nif){
@@ -476,7 +478,7 @@ export class FormularioPage implements OnInit {
     continue(){
       console.log(this.customerArray);
       if(this.checkEmptyCustomer() && this.checkEmptyVehicle()){
-        let opcionC: string = this.checkUser();
+        let opcionC: string = this.checkCustomer();
         let numberOp: number = 0;
 
         switch(opcionC){
@@ -517,6 +519,22 @@ export class FormularioPage implements OnInit {
           this.addIncidence();
           this.router.navigate(['/drawimage']);
         }    
+      }
+    }
+
+    checkNifCustomer(){
+      for(let cust of this.customerArray){
+        if(this.customer.nif == cust.data.nif){
+          this.customer = cust.data;
+        }
+      }
+    }
+
+    checkEnrVehicle(){
+      for(let veh of this.vehicleArray){
+        if(this.vehicle.enrollment == veh.data.enrollment){
+          this.vehicle = veh.data;
+        }
       }
     }
 

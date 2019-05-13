@@ -9,6 +9,7 @@ const routes: Routes = [
   { path: 'menu', loadChildren: './pages/menu/menu.module#MenuPageModule', canActivate : [AuthGuard] },
   { path: 'formulario', loadChildren: './pages/formulario/formulario.module#FormularioPageModule' },  { path: 'drawimage', loadChildren: './pages/drawimage/drawimage.module#DrawimagePageModule' },
   { path: 'damagelist', loadChildren: './pages/damagelist/damagelist.module#DamagelistPageModule' },
+  { path: 'summary', loadChildren: './pages/summary/summary.module#SummaryPageModule' },
 
 
 
