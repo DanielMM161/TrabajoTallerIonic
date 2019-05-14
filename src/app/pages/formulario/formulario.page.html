@@ -16,7 +16,8 @@
                     [name]="c.name" 
                     [(ngModel)]="customer[c.name]"
                     [formControlName]="c.name"
-                    (ionBlur)="checkNifCustomer()">
+                    (ionBlur)="checkNifCustomer()"
+                    style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
                   </ion-input>
                   <div *ngIf="formGroupCustomers.get(c.name).dirty || formGroupCustomers.get(c.name).touched">
                     <span>{{ getErrorCustomers(c.name)}}</span>
@@ -49,7 +50,18 @@
       <ion-card-title>
         Vehiculo
       </ion-card-title>
+
       <form [formGroup]="formGroupVehicles">
+
+        <div *ngIf="existCustomer">
+            <ion-item #miSelect >
+                <ion-label>Vehiculos</ion-label>
+                <ion-select placeholder="Selecciona un coche" comp>
+                  <ion-select-option [value]="auxVech.data.enrollment" *ngFor="let auxVech of auxVehicleArray" (ionChange)="getVehicleCustomer(auxVech.enrollment)">{{auxVech.data.brand}} -- {{auxVech.data.model}} -- {{auxVech.data.enrollment}}</ion-select-option>
+                </ion-select>
+              </ion-item>
+        </div>
+          
           <ion-item *ngFor="let cv of constantVehicles | async" color="light">
               <ion-item [ngSwitch]="cv.name" color="light">
                   <div *ngSwitchCase="'enrollment'">
@@ -60,7 +72,9 @@
                         [name]="cv.name"
                         [formControlName]="cv.name"
                         [(ngModel)]="vehicle[cv.name]"
-                        (ionBlur)="checkEnrVehicle()">
+                        (ionBlur)="checkEnrVehicle()"
+                        style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();"
+                        [disabled]="!formGroupCustomers.valid">
                       </ion-input>
 
                       <div *ngIf="formGroupVehicles.get(cv.name).dirty || formGroupVehicles.get(cv.name).touched"> 
@@ -68,18 +82,39 @@
                       </div>          
                   </div>
 
+                  <div *ngSwitchCase="'year'">
+                      <ion-label position="floating">{{ cv.title }}</ion-label>
+
+                        <ion-datetime
+                        [name]="cv.name"
+                        [formControlName]="cv.name"
+                        [(ngModel)]="vehicle[cv.name]" 
+                        display-format="YYYY"
+                        min="1985"
+                        max="2019"
+                        [disabled]="!formGroupCustomers.valid"> 
+                      </ion-datetime>
+
+                      <div *ngIf="formGroupVehicles.get(cv.name).dirty || formGroupVehicles.get(cv.name).touched"> 
+                      <span>{{getErrorVehicles(cv.name)}}</span>
+                      </div>          
+                  </div>
+
                   <div *ngSwitchDefault>
+
                       <ion-label position="floating">{{ cv.title }}</ion-label>
 
                       <ion-input
                       [type]="cv.type"
                       [name]="cv.name"
                       [formControlName]="cv.name"
-                      [(ngModel)]="vehicle[cv.name]">
+                      [(ngModel)]="vehicle[cv.name]"
+                      [disabled]="!formGroupCustomers.valid">
                     </ion-input>
                     <div *ngIf="formGroupVehicles.get(cv.name).dirty || formGroupVehicles.get(cv.name).touched"> 
                       <span>{{getErrorVehicles(cv.name)}}</span>
-                      </div>     
+                      </div>   
+
                   </div>
                 </ion-item> 
           </ion-item>
@@ -87,7 +122,7 @@
     </ion-card-content>
   </ion-card>
       
-      <ion-button expand="full" (click)="continue()" color="secondary">
+      <ion-button expand="full" (click)="continue()" color="secondary" >
         <h1>CONTINUAR</h1>
       </ion-button>
 </ion-content>

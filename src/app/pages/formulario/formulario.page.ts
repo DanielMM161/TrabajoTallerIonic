@@ -2,16 +2,19 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CustomerService } from '../../services/customer.service';
 import { Customer } from '../../models/customer';
-import { NavController, LoadingController, AlertController } from '@ionic/angular';
+import { NavController, LoadingController, AlertController, IonItem } from '@ionic/angular';
 import { FormGroup, FormControl, Validators, FormBuilder, NgControlStatus } from '@angular/forms';
 import { VehicleService } from '../../services/vehicle.service';
 import { DataService } from '../../services/data.service';
 import { Constants } from 'src/app/interfaces/Constants';
-import { Observable } from 'rxjs';
+import { Observable, empty } from 'rxjs';
 import { IncidenceService } from '../../services/incidence.service';
 import { Incidence } from '../../models/incidence';
 import { DamagesService } from '../../services/damages.service';
 import { Vehicle } from 'src/app/models/vehicle';
+import { ElementRef, ViewChild, AfterViewInit } from '@angular/core';
+
+
 
 @Component({
   selector: 'app-formulario',
@@ -19,6 +22,8 @@ import { Vehicle } from 'src/app/models/vehicle';
   styleUrls: ['./formulario.page.scss'],
 })
 export class FormularioPage implements OnInit {
+
+  @ViewChild( 'miSelect' ) miSelect: ElementRef;
 
   /* Atributos de la clase */
   formGroupCustomers: FormGroup;
@@ -48,6 +53,8 @@ export class FormularioPage implements OnInit {
     idCar: '', 
     state: ''
   };
+
+  existCustomer: Boolean = false;
 
   customerDoc;
   vehicleDoc;
@@ -109,6 +116,7 @@ export class FormularioPage implements OnInit {
 
   customerArray = [];
   vehicleArray = [];
+  auxVehicleArray = [];
   incidenceArray = [];
 
   /*Dentro del constructor inicializo mi FormGroup(es un conjunto de form Control) y le aplico ciertos
@@ -508,37 +516,83 @@ export class FormularioPage implements OnInit {
 
       console.log(numberOp);
 
-      if(numberOp != 0){
+      if (numberOp != 0) {
         this.checkUpdate(numberOp);
 
-      }else{
+      } else {
         this.addIncidence();
         this.router.navigate(['/drawimage']);
       }    
     }
   }
 
-  checkNifCustomer(){
+  checkNifCustomer() {
+    this.auxVehicleArray = [];
     for(let cust of this.customerArray){
       if(this.customer.nif == cust.data.nif){
-        this.customer.name = cust.data.name;
-        this.customer.address = cust.data.address;
-        this.customer.email = cust.data.address; 
-        this.customer.phone = cust.data.phone;
+        this.existCustomer = true;
+        this.customer = cust.data;
       }
+    }
+    //Si el usuario existe recorro la lista de vehiculos y guardo en un array Auxiliar los vehiculos que pertenezcan al cliente
+    if (this.existCustomer) {
+      for (let vech of this.vehicleArray) {
+        if (vech.data.owner == this.customer.nif) {
+          this.auxVehicleArray.push(vech);
+        }
+      }
+        //this.miSelect.nativeElement.focus();
     }
   }
 
-  checkEnrVehicle(){
-    for(let veh of this.vehicleArray){
-      if(this.vehicle.enrollment == veh.data.enrollment){
-        this.vehicle.brand = veh.data.brand;
-        this.vehicle.model = veh.data.model;
-        this.vehicle.kilometers = veh.data.kilometers;
-        this.vehicle.color = veh.data.color;
-        this.vehicle.year = veh.data.year;
+  getVehicleCustomer(enrollment: string) {
+    console.log(enrollment);
+    for (let auxV of this.auxVehicleArray) {
+      if(enrollment == auxV.enrollment) {
+        this.vehicle = auxV.data;
       }
     }
+    console.log(this.vehicle);
+
+  }
+
+  async checkEnrVehicle() {
+    if (this.customer.nif == '') {
+
+    } else {
+
+      for (let veh of this.vehicleArray) {
+        if (this.vehicle.enrollment == veh.data.enrollment) {
+          if (veh.data.owner == this.customer.nif) {
+            this.vehicle = veh.data;
+          } else {
+            const alert = await this.alertController.create({
+              header: 'Actualizar Datos',
+              message: 'La matricula introducida pertenece a otro cliente',
+              buttons: [
+                {
+                  text: 'Aceptar',
+                  role: 'aceptar',
+                  cssClass: 'primary',
+                  handler: () => {
+                    this.vehicle.enrollment = '';
+                    this.vehicle.color = '';
+                    this.vehicle.year = '';
+                    this.vehicle.brand = '';
+                    this.vehicle.model = '';
+                    this.vehicle.kilometers = '';
+                    this.vehicle.owner = '';
+                  }
+                }
+              ]
+            });
+            await alert.present();
+           }
+          }
+
+        }
+    }
+
   }
 }
 
