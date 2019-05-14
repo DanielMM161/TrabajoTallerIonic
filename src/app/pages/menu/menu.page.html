@@ -11,21 +11,25 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content padding color="medium">
 
-<ion-card>
-  <ion-card-header>
-    <ion-card-title>PARTES ABIERTOS</ion-card-title>
-  </ion-card-header>
-  <ion-list>
-    <ion-item *ngFor="let inc of incidenceArray" >
-      {{ inc.id }}
-    </ion-item>
-  </ion-list>
-</ion-card>
+  <ion-card>
+    <ion-card-header color="secondary">
+      <ion-card-title>PARTES ABIERTOS</ion-card-title>
+    </ion-card-header>     
+      <ion-list>
+        <ion-item *ngFor="let inc of incidenceArray" >
+          <ion-text>{{ inc.idInc }}</ion-text>
+        </ion-item>
+      </ion-list>
+  </ion-card>
 </ion-content>
 
-<ion-footer>
-  <ion-button (click)="IrForm()"><h1>Nueva Incidencia</h1></ion-button>
-  <ion-button (click)="IrDraw()"><h1>Draw Image</h1></ion-button>
+<ion-footer no-border>
+  <ion-toolbar padding color="medium">
+    <ion-button (click)="IrForm()">
+      <ion-icon name="add-circle-outline"></ion-icon>
+      Nueva Incidencia
+    </ion-button>
+  </ion-toolbar>
 </ion-footer>

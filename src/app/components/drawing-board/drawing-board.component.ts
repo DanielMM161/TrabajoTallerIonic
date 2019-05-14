@@ -1,6 +1,5 @@
-import { Component, ViewChild, EventEmitter, Output, ɵConsole } from '@angular/core';
+import { Component, ViewChild, EventEmitter, Output } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
-import { count } from 'rxjs/operators';
 
 @Component({
   selector: 'app-drawing-board',
@@ -18,11 +17,11 @@ export class DrawingBoardComponent {
   public myForm: FormGroup;
   @Output() public averiasEmmit = new EventEmitter();
   public averias = [];
-  public touches = [];
+  public touches = []; 
 
   
 
-  constructor( private formBuilder: FormBuilder ){
+  constructor( private formBuilder: FormBuilder){
 
     console.log(this.canvas);
 
@@ -39,6 +38,7 @@ export class DrawingBoardComponent {
     this.canvasElement.style.backgroundRepeat = "no-repeat";
     this.canvasElement.style.backgroundSize = "100% 100%";
     this.canvasElement.width = document.body.clientWidth - 6;
+    this.canvasElement.height = (document.body.clientHeight*3)/7;
 
     this.ctx = this.canvasElement.getContext('2d');
   }
@@ -111,15 +111,15 @@ export class DrawingBoardComponent {
     // this.ctx.closePath(); 
 
     this.ctx.beginPath();
-    this.ctx.arc(x, y, 50, 0, 2 * Math.PI);
-    this.ctx.lineWidth = 6;
+    this.ctx.arc(x, y, 40, 0, 2 * Math.PI);
+    this.ctx.lineWidth = 3;
     this.ctx.stroke();
-    this.ctx.font = "38px sans-serif";
+    this.ctx.font = "30px sans-serif";
     this.ctx.fillStyle = "#FF0000";
     if(this.touches.length < 9){
       this.ctx.fillText(this.touches.length + 1, this.startX-6, this.startY+6);
     }else{
-      this.ctx.fillText(this.touches.length + 1, this.startX-21, this.startY+6);
+      this.ctx.fillText(this.touches.length + 1, this.startX-15, this.startY+6);
     }
     
     this.ctx.closePath();
@@ -152,7 +152,7 @@ export class DrawingBoardComponent {
   removeControl(control){
     
     console.log(control);
-    this.ctx.clearRect(this.touches[parseInt(control.key)].x - 50 -3, this.touches[parseInt(control.key)].y - 50 -3, 50 * 2 + 6, 50 * 2 + 6);
+    this.ctx.clearRect(this.touches[parseInt(control.key)].x - 40 -3, this.touches[parseInt(control.key)].y - 40 -3, 40 * 2 + 6, 40 * 2 + 6);
     this.averias.splice(parseInt(control.key), 1);    
     this.myForm.removeControl(control.key);
     this.touches.splice(this.touches[parseInt(control.key)].id, 1);

@@ -10,7 +10,9 @@ import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 })
 export class DamagelistPage implements OnInit {
 
-  averias = [];
+  damages = [];
+  internDamage = [];
+
   public count = 0;
   public myForm: FormGroup;
 
@@ -21,23 +23,30 @@ export class DamagelistPage implements OnInit {
   }
 
   ngOnInit() {
-    this.averias = this.damageService.getDamages();
+    this.damages = this.damageService.getDamages();
 
-    console.log(this.averias);
+    console.log(this.damages);
   }
 
   addControl(){
-    this.count++;
-    this.myForm.addControl('averia' + this.count, new FormControl('', Validators.required));
+    if(this.damages.length < 10){
+      this.myForm.addControl('0'+(this.internDamage.length), new FormControl('', Validators.required));
+    }else{
+      this.myForm.addControl(String(this.internDamage.length), new FormControl('', Validators.required));
+    }    
+
+    console.log(this.internDamage);
   }
 
   removeControl(control){
     this.myForm.removeControl(control.key);
+    this.internDamage.splice(parseInt(control.key), 1);
   }
 
   goSummary( ){
-    this.damageService.setDamages(this.averias);
+    this.damageService.setDamages(this.damages.concat(this.internDamage));
     this.route.navigate(['/summary']);
+    console.log(this.damages);
   }
 
 }

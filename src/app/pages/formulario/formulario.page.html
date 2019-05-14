@@ -1,17 +1,13 @@
-<ion-content>
-  <ion-card>
-    <ion-card-header>
+<ion-content padding color="medium">
+  <ion-card color="light">
+    <ion-card-content ion-fixed>
       <ion-card-title>
-        -- CLIENTE --
+        Cliente
       </ion-card-title>
-    </ion-card-header>
-    
-
-    <ion-card-content>
       <form [formGroup]="formGroupCustomers">
-          <ion-item *ngFor="let c of constantCustomers | async">
+          <ion-item *ngFor="let c of constantCustomers | async" color="light">
         
-            <ion-item [ngSwitch]="c.name">
+            <ion-item [ngSwitch]="c.name" size = "large" color="light">
   
               <div *ngSwitchCase="'nif'">
                   <ion-label position="floating">{{ c.title }}</ion-label>
@@ -46,18 +42,16 @@
       </form>
     </ion-card-content>  
   </ion-card>
-  <ion-card>
 
-    <ion-card-header>
-      <ion-card-title>
-        -- VEHICULO --
-      </ion-card-title>
-    </ion-card-header>
+  <ion-card color="light">
   
     <ion-card-content>
+      <ion-card-title>
+        Vehiculo
+      </ion-card-title>
       <form [formGroup]="formGroupVehicles">
-          <ion-item *ngFor="let cv of constantVehicles | async" >
-              <ion-item [ngSwitch]="cv.name">
+          <ion-item *ngFor="let cv of constantVehicles | async" color="light">
+              <ion-item [ngSwitch]="cv.name" color="light">
                   <div *ngSwitchCase="'enrollment'">
                       <ion-label position="floating">{{ cv.title }}</ion-label>
 
@@ -93,7 +87,7 @@
     </ion-card-content>
   </ion-card>
       
-      <ion-button expand="full" (click)="continue()" [disabled]="">
+      <ion-button expand="full" (click)="continue()" color="secondary">
         <h1>CONTINUAR</h1>
       </ion-button>
 </ion-content>

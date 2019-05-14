@@ -167,14 +167,6 @@ export class FormularioPage implements OnInit {
     //COMPROBAR BIEN DATOS - JSON ERROR MESSAGE
   }
 
-  getNifExist(){
-    this.customerService.checkNif(this.customer);
-  }
-
-  getVehiclesExist() {
-    this.vehicleService.checkEnrollment(this.vehicle);
-  }
-
   public getErrorCustomers(controlName: string): string {
     let error = '';
     const control = this.formGroupCustomers.get(controlName);
@@ -434,109 +426,119 @@ export class FormularioPage implements OnInit {
     this.incidenceService.createIncidence(this.incidence);
   }
 
-    checkCustomer() : string {
-      let resp: string = "crear";
-      for(let cus of this.customerArray){
-        if(this.customer.nif == cus.data.nif){
-          if(this.customer.name != cus.data.name ||
-             this.customer.phone != cus.data.phone ||
-             this.customer.email != cus.data.email ||
-             this.customer.address != cus.data.address){
-              this.customerDoc = cus.id;
-              return resp = "modificar";
-          }else{
-            resp = "igual";
-          }
-        }
-      }
-      console.log(resp);
-      return resp;
-    }
-
-    checkVehicle() : string {
-      let resp: string = "crear";
-
-      for(let veh of this.vehicleArray){
-        if(this.vehicle.enrollment == veh.data.enrollment){
-          if(this.vehicle.brand != veh.data.brand ||
-             this.vehicle.model != veh.data.model ||
-             this.vehicle.kilometers != veh.data.kilometers ||
-             this.vehicle.color != veh.data.color ||
-             this.vehicle.year != veh.data.year){
-              this.vehicleDoc = veh.id;
-              return "modificar";
-          }else{
-            console.log("igual");
-            resp = "igual";
-          }
-        }
-      }
-
-      return resp;
-    }
-
-    continue(){
-      console.log(this.customerArray);
-      if(this.checkEmptyCustomer() && this.checkEmptyVehicle()){
-        let opcionC: string = this.checkCustomer();
-        let numberOp: number = 0;
-
-        switch(opcionC){
-          case "crear":
-            this.customerService.createCustomer(this.customer);
-            break;
-
-          case "modificar":
-            numberOp = numberOp + 1;
-            break;
-
-          case "igual":
-            console.log(opcionC);
-            break;
-        }
-        let opcionV: string = this.checkVehicle();
-
-        switch(opcionV){
-          case "crear":
-            this.vehicle.owner = this.customer.nif;
-            this.vehicleService.createVehicle(this.vehicle);
-            break;
-
-          case "modificar":
-            this.vehicle.owner = this.customer.nif;
-            numberOp = numberOp + 2;
-            break;
-
-          case "igual":
-            console.log(opcionV);
-            break;
-        }
-
-        if(numberOp != 0){
-          this.checkUpdate(numberOp);
-
+  checkCustomer() : string {
+    let resp: string = "crear";
+    for(let cus of this.customerArray){
+      console.log(this.customer);
+      console.log(cus.data.name);
+      if(this.customer.nif == cus.data.nif){
+        if(this.customer.name != cus.data.name ||
+            this.customer.phone != cus.data.phone ||
+            this.customer.email != cus.data.email ||
+            this.customer.address != cus.data.address){
+            this.customerDoc = cus.id;
+            return resp = "modificar";
         }else{
-          this.addIncidence();
-          this.router.navigate(['/drawimage']);
-        }    
+          resp = "igual";
+        }
       }
     }
+    console.log(resp);
+    return resp;
+  }
 
-    checkNifCustomer(){
-      for(let cust of this.customerArray){
-        if(this.customer.nif == cust.data.nif){
-          this.customer = cust.data;
+  checkVehicle() : string {
+    let resp: string = "crear";
+
+    for(let veh of this.vehicleArray){
+      if(this.vehicle.enrollment == veh.data.enrollment){
+        if(this.vehicle.brand != veh.data.brand ||
+            this.vehicle.model != veh.data.model ||
+            this.vehicle.kilometers != veh.data.kilometers ||
+            this.vehicle.color != veh.data.color ||
+            this.vehicle.year != veh.data.year){
+            this.vehicleDoc = veh.id;
+            return "modificar";
+        }else{
+          console.log("igual");
+          resp = "igual";
         }
       }
     }
 
-    checkEnrVehicle(){
-      for(let veh of this.vehicleArray){
-        if(this.vehicle.enrollment == veh.data.enrollment){
-          this.vehicle = veh.data;
-        }
+    return resp;
+  }
+
+  continue(){
+    console.log(this.customerArray);
+    if(this.checkEmptyCustomer() && this.checkEmptyVehicle()){
+      let opcionC: string = this.checkCustomer();
+      let numberOp: number = 0;
+
+      switch(opcionC){
+        case "crear":
+          this.customerService.createCustomer(this.customer);
+          break;
+
+        case "modificar":
+          numberOp = numberOp + 1;
+          break;
+
+        case "igual":
+          console.log(opcionC);
+          break;
+      }
+      let opcionV: string = this.checkVehicle();
+
+      switch(opcionV){
+        case "crear":
+          this.vehicle.owner = this.customer.nif;
+          this.vehicleService.createVehicle(this.vehicle);
+          break;
+
+        case "modificar":
+          this.vehicle.owner = this.customer.nif;
+          numberOp = numberOp + 2;
+          break;
+
+        case "igual":
+          console.log(opcionV);
+          break;
+      }
+
+      console.log(numberOp);
+
+      if(numberOp != 0){
+        this.checkUpdate(numberOp);
+
+      }else{
+        this.addIncidence();
+        this.router.navigate(['/drawimage']);
+      }    
+    }
+  }
+
+  checkNifCustomer(){
+    for(let cust of this.customerArray){
+      if(this.customer.nif == cust.data.nif){
+        this.customer.name = cust.data.name;
+        this.customer.address = cust.data.address;
+        this.customer.email = cust.data.address; 
+        this.customer.phone = cust.data.phone;
       }
     }
+  }
 
+  checkEnrVehicle(){
+    for(let veh of this.vehicleArray){
+      if(this.vehicle.enrollment == veh.data.enrollment){
+        this.vehicle.brand = veh.data.brand;
+        this.vehicle.model = veh.data.model;
+        this.vehicle.kilometers = veh.data.kilometers;
+        this.vehicle.color = veh.data.color;
+        this.vehicle.year = veh.data.year;
+      }
+    }
+  }
 }
 

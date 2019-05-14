@@ -1,9 +1,17 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>summary</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content padding>
 
-<ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>{{this.id}} -- {{this.vehicle.enrollment}}</ion-card-title>
+      <ion-card-subtitle>{{this.customer.name}} / {{this.customer.nif}}</ion-card-subtitle>
+    </ion-card-header>
 
+    <ion-card-content>
+      <ion-list>
+        <ion-item *ngFor="let av of this.damages">
+          <ion-text>{{av}}</ion-text>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
 </ion-content>

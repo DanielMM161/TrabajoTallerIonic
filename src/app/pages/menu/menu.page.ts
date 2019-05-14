@@ -12,18 +12,18 @@ import { IncidenceService } from 'src/app/services/incidence.service';
 })
 export class MenuPage implements OnInit {
 
-  public incidenceArray: Incidence[];
+  public incidenceArray = [];
 
   constructor(public AfAuth: AuthService, private router: Router, private incidenceService: IncidenceService) { }
 
   ngOnInit( ) {
     this.incidenceService.getAllIncidence().subscribe(data => {
-    /*  this.incidenceArray = data.map(e => {
+      this.incidenceArray = data.map(e => {
         return {
           id: e.payload.doc.id,
           ...e.payload.doc.data()
-        } as Incidence;
-      })*/
+        };
+      })
     });
   }
 

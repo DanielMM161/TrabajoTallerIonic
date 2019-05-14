@@ -9,16 +9,15 @@ import { Router } from '@angular/router';
 })
 export class DrawimagePage implements OnInit {
 
-  idDamage;
+  idDamage: string;
   averias = [];  
+  canvas;
 
   constructor(public damageService: DamagesService, public route: Router){ }
 
   ngOnInit(): void {
 
     this.idDamage = this.damageService.getId();
-    console.log(this.idDamage);    
-    console.log('objeto', this.damageService);
   }
 
   recogeArray(event){
@@ -26,9 +25,22 @@ export class DrawimagePage implements OnInit {
     console.log(this.averias);
   }
 
+  recogeCanvas(event){
+    this.canvas = event;
+    console.log(this.canvas);
+  }
+  
+
   goDamageList( ){
     this.damageService.setDamages(this.averias);
+    this.saveCanvasImage();
     this.route.navigate(['/damagelist']);
   }
+
+  saveCanvasImage(){
+    var dataUrl = this.canvas.nativeElement.getDataURL();
+    console.log(dataUrl);
+  }
+  
 
 }

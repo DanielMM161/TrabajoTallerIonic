@@ -14,13 +14,16 @@ export class IncidenceService {
     return this.firestore.collection('incidents').snapshotChanges();
   }
 
+  getIncidence(incidence: Incidence){
+    return this.firestore.collection('incidents').doc(incidence.idInc).snapshotChanges();
+  }
+
   createIncidence(incidence: Incidence){
-    return this.firestore.collection('incidents').add(incidence);
+    return this.firestore.collection('incidents').doc(incidence.idInc).set(incidence);
   }
 
   updateIncidence(incidence: Incidence){
-    delete incidence.idInc;
-    this.firestore.doc('incidents/' + incidence.idInc).update(incidence);
+    return this.firestore.collection('incidents').doc(incidence.idInc).set(incidence);
   }
 
   deleteIncidence(incidenceId: string){
