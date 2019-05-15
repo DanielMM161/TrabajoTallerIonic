@@ -12,6 +12,7 @@ export class DamagesService {
   private customer: Customer;
   private vehicle: Vehicle;
   private damages = [];
+  private image = new Image();
 
   constructor() { }
 
@@ -46,4 +47,12 @@ export class DamagesService {
   getVehicle(){
     return this.vehicle;
   }
+
+  setImage( image){
+    this.image = image;
+  }
+  getImage(){
+    return this.image;
+  }
+
 }

@@ -9,14 +9,17 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 
-import { AngularFireModule} from 'angularfire2'
-import { AngularFireDatabaseModule } from 'angularfire2/database'
+import { AngularFireModule} from 'angularfire2';
+import { AngularFireDatabaseModule } from 'angularfire2/database';
 
 import {AngularFireAuthModule} from "@angular/fire/auth"
 import {AngularFirestoreModule} from 'angularfire2/firestore';
+import { AngularFireStorageModule} from 'angularfire2/storage';
+
 import { environment } from 'src/environments/environment';
 import { HttpClientModule } from '@angular/common/http';
 import { DamagesService } from './services/damages.service';
+
 
 
 
@@ -31,6 +34,7 @@ import { DamagesService } from './services/damages.service';
     AngularFireDatabaseModule,
     AngularFireAuthModule,
     AngularFirestoreModule,
+    AngularFireStorageModule,
     HttpClientModule
   ],
   providers: [

@@ -1,12 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
 import { DrawimagePage } from './drawimage.page';
 import { ComponentsModule } from 'src/app/components/components.module';
+
+import { AngularFireStorageModule} from 'angularfire2/storage';
 
 const routes: Routes = [
   {
@@ -19,8 +21,10 @@ const routes: Routes = [
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     IonicModule,
     ComponentsModule,
+    AngularFireStorageModule,
     RouterModule.forChild(routes)
   ],
   declarations: [DrawimagePage]

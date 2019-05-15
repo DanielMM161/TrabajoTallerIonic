@@ -1,5 +1,5 @@
 <ion-content padding>
-
+  <h1>RESUMEN DE LA PERITACION</h1>
   <ion-card>
     <ion-card-header>
       <ion-card-title>{{this.id}} -- {{this.vehicle.enrollment}}</ion-card-title>
@@ -7,6 +7,9 @@
     </ion-card-header>
 
     <ion-card-content>
+      <canvas #myCanvas id="myCanvas">
+
+      </canvas>
       <ion-list>
         <ion-item *ngFor="let av of this.damages">
           <ion-text>{{av}}</ion-text>
