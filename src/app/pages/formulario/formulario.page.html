@@ -47,20 +47,28 @@
   <ion-card color="light">
   
     <ion-card-content>
-      <ion-card-title>
-        Vehiculo
-      </ion-card-title>
+      <ion-row>
+        <ion-col size="6">
+          <ion-card-title>
+            Vehiculo
+          </ion-card-title>
+        </ion-col>
+        <ion-col size="6">
+            <div *ngIf="existCustomer">
+                <ion-item #miSelect >
+                    <ion-select placeholder="Selecciona un coche" (ionChange)="getVehicleCustomer($event)" interface="popover">
+                      <ion-select-option 
+                       *ngFor="let auxVeh of auxVehicleArray" value="{{auxVeh.data.enrollment}}">{{auxVeh.data.enrollment}} - {{auxVeh.data.brand}} - {{auxVeh.data.model}}</ion-select-option>
+                    </ion-select>
+                  </ion-item>
+            </div>
+        </ion-col>
+      </ion-row>
+      
 
       <form [formGroup]="formGroupVehicles">
 
-        <div *ngIf="existCustomer">
-            <ion-item #miSelect >
-                <ion-label>Vehiculos</ion-label>
-                <ion-select placeholder="Selecciona un coche" comp>
-                  <ion-select-option [value]="auxVech.data.enrollment" *ngFor="let auxVech of auxVehicleArray" (ionChange)="getVehicleCustomer(auxVech.enrollment)">{{auxVech.data.brand}} -- {{auxVech.data.model}} -- {{auxVech.data.enrollment}}</ion-select-option>
-                </ion-select>
-              </ion-item>
-        </div>
+        
           
           <ion-item *ngFor="let cv of constantVehicles | async" color="light">
               <ion-item [ngSwitch]="cv.name" color="light">
@@ -73,8 +81,7 @@
                         [formControlName]="cv.name"
                         [(ngModel)]="vehicle[cv.name]"
                         (ionBlur)="checkEnrVehicle()"
-                        style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();"
-                        [disabled]="!formGroupCustomers.valid">
+                        style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
                       </ion-input>
 
                       <div *ngIf="formGroupVehicles.get(cv.name).dirty || formGroupVehicles.get(cv.name).touched"> 
@@ -91,8 +98,7 @@
                         [(ngModel)]="vehicle[cv.name]" 
                         display-format="YYYY"
                         min="1985"
-                        max="2019"
-                        [disabled]="!formGroupCustomers.valid"> 
+                        max="2019">
                       </ion-datetime>
 
                       <div *ngIf="formGroupVehicles.get(cv.name).dirty || formGroupVehicles.get(cv.name).touched"> 
@@ -108,8 +114,7 @@
                       [type]="cv.type"
                       [name]="cv.name"
                       [formControlName]="cv.name"
-                      [(ngModel)]="vehicle[cv.name]"
-                      [disabled]="!formGroupCustomers.valid">
+                      [(ngModel)]="vehicle[cv.name]">
                     </ion-input>
                     <div *ngIf="formGroupVehicles.get(cv.name).dirty || formGroupVehicles.get(cv.name).touched"> 
                       <span>{{getErrorVehicles(cv.name)}}</span>

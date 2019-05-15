@@ -417,7 +417,7 @@ export class FormularioPage implements OnInit {
       ])),
       year: new FormControl('', Validators.compose([
         Validators.required,
-        Validators.pattern('^[0-9]{1,2}$')
+        Validators.pattern('^[0-9]{4}$')
       ])),
     }, { updateOn: 'blur' });
   }
@@ -537,22 +537,25 @@ export class FormularioPage implements OnInit {
     //Si el usuario existe recorro la lista de vehiculos y guardo en un array Auxiliar los vehiculos que pertenezcan al cliente
     if (this.existCustomer) {
       for (let vech of this.vehicleArray) {
-        if (vech.data.owner == this.customer.nif) {
+        if (vech.data.owner == this.customer.nif) {          
           this.auxVehicleArray.push(vech);
+          console.log(this.auxVehicleArray);
         }
       }
         //this.miSelect.nativeElement.focus();
     }
   }
 
-  getVehicleCustomer(enrollment: string) {
-    console.log(enrollment);
-    for (let auxV of this.auxVehicleArray) {
-      if(enrollment == auxV.enrollment) {
-        this.vehicle = auxV.data;
-      }
+  getVehicleCustomer(event) {
+    
+    console.log(event);
+     for (let auxV of this.auxVehicleArray) {
+       console.log(String(event.detail.value.length), auxV.data.enrollment.length);
+      if(event.detail.value == auxV.data.enrollment) {
+        console.log('entra');
+         this.vehicle = auxV.data;
+       }
     }
-    console.log(this.vehicle);
 
   }
 
