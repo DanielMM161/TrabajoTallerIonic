@@ -56,9 +56,9 @@
         <ion-col size="6">
             <div *ngIf="existCustomer">
                 <ion-item #miSelect >
-                    <ion-select placeholder="Selecciona un coche" (ionChange)="getVehicleCustomer($event)" interface="popover">
+                    <ion-select placeholder="Selecciona un coche" (ionChange)="getVehicleCustomer($event)">
                       <ion-select-option 
-                       *ngFor="let auxVeh of auxVehicleArray" value="{{auxVeh.data.enrollment}}">{{auxVeh.data.enrollment}} - {{auxVeh.data.brand}} - {{auxVeh.data.model}}</ion-select-option>
+                       *ngFor="let auxVeh of auxVehicleArray" value="{{auxVeh.data.enrollment}}">{{auxVeh.data.enrollment}} - {{auxVeh.data.brand}} - {{auxVeh.data.model}} </ion-select-option>
                     </ion-select>
                   </ion-item>
             </div>

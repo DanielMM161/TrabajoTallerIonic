@@ -437,15 +437,15 @@ export class FormularioPage implements OnInit {
   checkCustomer() : string {
     let resp: string = "crear";
     for(let cus of this.customerArray){
-      console.log(this.customer);
-      console.log(cus.data.name);
       if(this.customer.nif == cus.data.nif){
+        console.log(this.customer, cus);
         if(this.customer.name != cus.data.name ||
             this.customer.phone != cus.data.phone ||
             this.customer.email != cus.data.email ||
             this.customer.address != cus.data.address){
-            this.customerDoc = cus.id;
-            return resp = "modificar";
+              console.log('enra');
+              this.customerDoc = cus.id;
+              return resp = "modificar";
         }else{
           resp = "igual";
         }
@@ -460,11 +460,12 @@ export class FormularioPage implements OnInit {
 
     for(let veh of this.vehicleArray){
       if(this.vehicle.enrollment == veh.data.enrollment){
+        console.log(this.vehicle, veh);
         if(this.vehicle.brand != veh.data.brand ||
             this.vehicle.model != veh.data.model ||
             this.vehicle.kilometers != veh.data.kilometers ||
             this.vehicle.color != veh.data.color ||
-            this.vehicle.year != veh.data.year){
+            this.vehicle.year.substring(0,4) != veh.data.year){
             this.vehicleDoc = veh.id;
             return "modificar";
         }else{
@@ -531,7 +532,10 @@ export class FormularioPage implements OnInit {
     for(let cust of this.customerArray){
       if(this.customer.nif == cust.data.nif){
         this.existCustomer = true;
-        this.customer = cust.data;
+        this.customer.name = cust.data.name;
+        this.customer.email = cust.data.email;
+        this.customer.phone = cust.data.phone;
+        this.customer.address = cust.data.address;
       }
     }
     //Si el usuario existe recorro la lista de vehiculos y guardo en un array Auxiliar los vehiculos que pertenezcan al cliente

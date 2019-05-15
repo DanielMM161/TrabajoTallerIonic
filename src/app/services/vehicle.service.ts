@@ -35,10 +35,12 @@ export class VehicleService {
   }
 
   createVehicle(vehicle: Vehicle){
+    vehicle.year = vehicle.year.substring(0, 4);
     return this.firestore.collection('vehicles').doc(vehicle.enrollment).set(vehicle);
   }
 
   updateVehicle(vehicle: Vehicle, vehicleId){
+    vehicle.year = vehicle.year.substring(0, 4);
     this.firestore.collection('vehicles').doc(vehicle.enrollment).set(vehicle);
   }
   
