@@ -1,8 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { DamagesService } from 'src/app/services/damages.service';
 import { Router } from '@angular/router';
-import { FormGroup, FormBuilder, Validators, FormControl} from '@angular/forms';
-import { AngularFireStorage} from 'angularfire2/storage';
+import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
+import { AngularFireStorage, AngularFireUploadTask, AngularFireStorageReference } from 'angularfire2/storage';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-drawimage',
@@ -12,7 +13,7 @@ import { AngularFireStorage} from 'angularfire2/storage';
 export class DrawimagePage implements OnInit {
 
   idDamage: string;
-  
+
   @ViewChild('myCanvas') canvas: any;
   canvasElement: any;
   startX: any;
@@ -22,12 +23,15 @@ export class DrawimagePage implements OnInit {
   public myForm: FormGroup;
   public averias = [];
   public touches = [];
-  
+  downloadURL: Observable<any>;
+  task: AngularFireUploadTask;
+  ref: AngularFireStorageReference;
 
-  constructor( private formBuilder: FormBuilder,
-                public damageService: DamagesService,
-                public route: Router,
-                private storageAng: AngularFireStorage){
+
+  constructor(private formBuilder: FormBuilder,
+    public damageService: DamagesService,
+    public route: Router,
+    private storageAng: AngularFireStorage) {
 
     this.myForm = formBuilder.group({
 
@@ -37,46 +41,64 @@ export class DrawimagePage implements OnInit {
   ngOnInit(): void {
 
     this.idDamage = this.damageService.getId();
-  }    
+  }
 
-  ngAfterViewInit(){
+  ngAfterViewInit() {
 
     console.log(this.canvas);
     this.canvasElement = this.canvas.nativeElement;
-    this.setBackgroundImage();
+    this.canvasElement.style.background = "url(../../assets/img/coche.png)";
+    this.canvasElement.style.backgroundRepeat = "no-repeat";
+    this.canvasElement.style.backgroundSize = "100% 100%";
     this.canvasElement.width = document.body.clientWidth - 6;
-    this.canvasElement.height = (document.body.clientHeight*3)/7;
+    this.canvasElement.height = (document.body.clientHeight * 3) / 7;
     this.ctx = this.canvasElement.getContext('2d');
+    this.setBackgroundImage(this.ctx);
   }
 
-  goDamageList( ){
+  goDamageList() {
     this.damageService.setDamages(this.averias);
     this.saveCanvasImage();
     this.route.navigate(['/damagelist']);
   }
 
-  setBackgroundImage(){
-    let context = this.canvasElement.getContext("2d");
+  async setBackgroundImage(context) {
 
     var background = new Image();
-    background.src = "../../assets/img/coche.png";
-
-    background.onload = function(){
-      context.drawImage(background,0,0, document.body.clientWidth - 6, (document.body.clientHeight*3)/7);   
+    background.src = "../../assets/img/cocheTemplate.png";
+    background.onload = await function () {
+      context.drawImage(background, 0, 0, document.body.clientWidth - 6, (document.body.clientHeight * 3) / 7);
     }
+
   }
 
-  saveCanvasImage(){
-    let name = this.idDamage +'.png';
-    
+  setNewBack(context) {
+    var background = new Image();
+
+
+    background.onload = function () {
+      context.drawImage(background, 0, 0, document.body.clientWidth - 6, (document.body.clientHeight * 3) / 7);
+    }
+    background.src = "../../assets/img/coche.png";
+
+
+  }
+
+  saveCanvasImage() {
+    let name = this.idDamage + '.png';
+
     var image = new Image();
     image.src = this.canvasElement.toDataURL("image/png");
     console.log(image);
     this.damageService.setImage(image);
-    this.storageAng.ref(name).putString(image.src, 'data_url');
+    this.ref = this.storageAng.ref(name);
+    this.task = this.storageAng.ref(name).putString(image.src, 'data_url');
+    this.downloadURL = this.ref.getDownloadURL();
+    console.log(this.downloadURL);
+    console.log(this.storageAng);
   }
 
-  handleStart( ev ){
+  handleStart(ev) {
 
     ev.preventDefault();
     ev.stopPropagation();
@@ -84,117 +106,105 @@ export class DrawimagePage implements OnInit {
     this.startX = ev.touches[0].clientX - this.canvasElement.offsetLeft;
     this.startY = ev.touches[0].clientY - this.canvasElement.offsetTop;
 
-    this.drawCircle(this.startX, this.startY);
     this.addControl();
-    
+    this.drawCircle(this.startX, this.startY, this.touches.length);
+
+
   }
 
-  // handleMove( ev ){
-
-  //   if (!this.isDown) {
-  //     return;
-  //   }
-
-  //   ev.preventDefault();
-  //   ev.stopPropagation();
-  //   let mouseX = ev.touches[0].clientX - this.offsetX;
-  //   this.endX = mouseX;    
-  //   let mouseY = ev.touches[0].clientY - this.offsetY;
-  //   this.endY = mouseY;
-  //   this.drawCircle(mouseX, mouseY);
-    
-  // }
-
-  // function to draw the oval and put center text
-
-  // handleEnd( ev ){
-  //   if (!this.isDown) {
-  //     return;
-  //   }
-
-  //   ev.preventDefault();
-  //   ev.stopPropagation();
-  //   this.isDown = false;  
-    
-  //   this.ctx.stroke(); 
-  //   this.ctx.font = "30px sans-serif";
-  //   this.ctx.fillStyle = "#FF0000";
-  //   this.ctx.fillText(this.count +1, this.startX, this.startY);
-  //   // center of oval
-    
-  //   //create a text in the middle of the circle
-  //   //this.ctx.fillText(this.count+1, (this.startX + (this.endX - this.startX) / 2)-4, (this.startY + (this.endY - this.startY) / 2)+4);
-  //   this.addControl();
-    
-  // }
-
-  drawCircle(x, y) {
-    
-    //this.ctx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
-    //this.ctx.clearRect(x, y, this.startX, y, this.startX, this.startY + (y - this.startY) / 2);
-    
-    // to create an oval 
-    // this.ctx.beginPath();
-    // this.ctx.strokeStyle = '#000';
-    // this.ctx.lineWidth = 8;
-    // this.ctx.moveTo(this.startX, this.startY + (y - this.startY) / 2);
-    // this.ctx.bezierCurveTo(this.startX, this.startY, x, this.startY, x, this.startY + (y - this.startY) / 2);
-    // this.ctx.bezierCurveTo(x, y, this.startX, y, this.startX, this.startY + (y - this.startY) / 2);
-    // this.ctx.closePath(); 
-
+  drawCircle(x, y, id?) {
     this.ctx.beginPath();
     this.ctx.arc(x, y, 40, 0, 2 * Math.PI);
     this.ctx.lineWidth = 3;
     this.ctx.stroke();
     this.ctx.font = "30px sans-serif";
     this.ctx.fillStyle = "#FF0000";
-    if(this.touches.length < 9){
-      this.ctx.fillText(this.touches.length + 1, this.startX-6, this.startY+6);
-    }else{
-      this.ctx.fillText(this.touches.length + 1, this.startX-15, this.startY+6);
+    if (id != null) {
+      if (id < 9) {
+        this.ctx.fillText(id, x - 6, y + 6);
+      } else {
+        this.ctx.fillText(id, x - 15, y + 6);
+      }
+    } else {
+      this.ctx.fillText(1, x - 6, y + 6);
     }
-    
+
+
+
     this.ctx.closePath();
-    
+
   }
 
-  clearAll(){
+  clearAll() {
     this.ctx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
-    this.myForm = this.formBuilder.group({ });
+    this.myForm = this.formBuilder.group({});
     this.averias = [];
     this.touches = [];
+
+    this.setBackgroundImage(this.ctx);
   }
 
-  addControl(){
-    if(this.touches.length < 10){
-      this.myForm.addControl('0'+(this.touches.length), new FormControl('', Validators.required));
-    }else{
-      this.myForm.addControl(String(this.touches.length), new FormControl('', Validators.required));
-    }    
+  addControl() {
 
-    this.touches.push({ "id": this.touches.length,
-                        "x": this.startX,
-                        "y": this.startY
-                        });
+    if (this.touches.length == 0) {
+      this.myForm.addControl(String(0), new FormControl('', Validators.required));
+      this.touches.push({
+        "id": 0,
+        "x": this.startX,
+        "y": this.startY,
+        "form": 0
+      });
+    } else {
+      this.myForm.addControl(String(this.touches[this.touches.length - 1].form + 1), new FormControl('', Validators.required));
+
+      this.touches.push({
+        "id": this.touches[this.touches.length - 1].id + 1,
+        "x": this.startX,
+        "y": this.startY,
+        "form": this.touches[this.touches.length - 1].form + 1
+      });
+    }
+    console.log(this.myForm);
+    console.log(this.touches);
   }
 
-  removeControl(control){
-    
+  removeControl(control) {
+
     console.log(control);
-    this.ctx.clearRect(this.touches[parseInt(control.key)].x - 40 -3, this.touches[parseInt(control.key)].y - 40 -3, 40 * 2 + 6, 40 * 2 + 6);
-    this.averias.splice(parseInt(control.key), 1);    
+    
     this.myForm.removeControl(control.key);
-    this.touches.splice(this.touches[parseInt(control.key)].id, 1);
-    console.log( this.myForm.controls);
-    console.log( this.touches[control.key]);
-    console.log( this.touches)
+
+    for (let i = 0; i < this.touches.length; i++) {
+
+      if (control.key == this.touches[i].form) {
+        this.touches.splice(i, 1);
+        this.averias.splice(i, 1);
+        this.ctx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
+        i--;
+      }
+      else {
+        this.touches[i].id = i;
+      }
+    }
+
+    this.setBackgroundImage(this.ctx);
+
+    setTimeout(() => {
+      for (let i = 0; i < this.touches.length; i++) {
+        this.drawCircle(this.touches[i].x, this.touches[i].y, i + 1);
+      }
+    }, 350);
+    console.log('touches', this.touches)
+    console.log('averias', this.averias)
+
+
   }
 
-  checkValue(control: string): boolean{
-    let number:number = parseInt(control);
-    if(number >= (this.touches.length-1)){
+  checkValue(control: string): boolean {
+    let number: number = parseInt(control);
+    if (number >= (this.touches.length - 1)) {
       return true;
-    }else{
+    } else {
       return false;
     }
   }

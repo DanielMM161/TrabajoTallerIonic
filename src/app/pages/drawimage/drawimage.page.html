@@ -26,7 +26,7 @@
                   <ion-item *ngFor="let control of myForm.controls | keyvalue; let i = index" color="light">
                       <ion-label> {{i + 1}} </ion-label>
                       <ion-input required type="text" [formControlName]="control.key" placeHolder="AVERIA..." [(ngModel)]="averias[i]"></ion-input>
-                      <ion-icon size='large' *ngIf="checkValue(control.key)" (click)="removeControl(control)" name="close-circle"></ion-icon>
+                      <ion-icon size='large' (click)="removeControl(control)" name="close-circle"></ion-icon>
                   </ion-item>
               </form>
           </ion-list>
@@ -37,18 +37,23 @@
 </ion-content>
 
 <ion-footer no-border>
-  <ion-toolbar color="medium">    
-      <ion-button defaultHref="/" color="secondary">
-        <ion-icon name="arrow-back"></ion-icon>
-        Volver
-      </ion-button>
+    <ion-toolbar color="medium" no-border>
+        <ion-buttons slot="start">
+            <ion-button color="secondary" fill="solid">
+                <ion-icon slot="start" name="arrow-round-back"></ion-icon>
+                Volver
+            </ion-button>
+        </ion-buttons>
 
-      <ion-title text-center>
-        Incidencia: {{this.idDamage}}
-      </ion-title> 
+        <ion-title text-center>
+            Incidencia: {{this.idDamage}}
+        </ion-title>
 
-      <ion-button (click)="goDamageList()" color="secondary" slot="primary">
-        Continuar
-      </ion-button>
-  </ion-toolbar>
+        <ion-buttons slot="end">
+            <ion-button color="secondary" fill="solid" (click)="goDamageList()">
+                <ion-icon slot="end" name="arrow-round-forward"></ion-icon>
+                Continuar
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
 </ion-footer>

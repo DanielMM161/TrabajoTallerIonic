@@ -51,7 +51,9 @@ export class FormularioPage implements OnInit {
   incidence: Incidence = {
     idInc: '',
     idCar: '', 
-    state: ''
+    state: '',
+    imageName: '',
+    imagePath: ''
   };
 
   existCustomer: Boolean = false;

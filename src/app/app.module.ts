@@ -12,16 +12,13 @@ import { AppRoutingModule } from './app-routing.module';
 import { AngularFireModule} from 'angularfire2';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
 
-import {AngularFireAuthModule} from "@angular/fire/auth"
+import {AngularFireAuthModule} from "angularfire2/auth"
 import {AngularFirestoreModule} from 'angularfire2/firestore';
 import { AngularFireStorageModule} from 'angularfire2/storage';
 
 import { environment } from 'src/environments/environment';
 import { HttpClientModule } from '@angular/common/http';
 import { DamagesService } from './services/damages.service';
-
-
-
 
 @NgModule({
   declarations: [AppComponent],
