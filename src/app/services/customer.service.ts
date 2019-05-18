@@ -22,7 +22,7 @@ export class CustomerService {
 
   }
 
-  updateCustomer(customer: Customer, customerId: string){
+  updateCustomer(customer: Customer){
     this.firestore.collection('customers').doc(customer.nif).set(customer);
   }
 

@@ -42,7 +42,7 @@ export class SummaryPage implements OnInit {
     let context = this.canvasElement.getContext("2d");
 
     var background = new Image();
-    background.src = "https://firebasestorage.googleapis.com/v0/b/mw-whorkshop.appspot.com/o/1.png?alt=media&token=19d9b708-a04b-4add-9239-fb5c61ee0a85";
+    background.src = this.damageService.incidence.imagePath;
 
     background.onload = function(){
       context.drawImage(background,0,0, document.body.clientWidth*4/5, (document.body.clientHeight*4)/12);   

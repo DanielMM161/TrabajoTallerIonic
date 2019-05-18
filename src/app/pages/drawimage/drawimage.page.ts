@@ -4,6 +4,9 @@ import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { AngularFireStorage, AngularFireUploadTask, AngularFireStorageReference } from 'angularfire2/storage';
 import { Observable } from 'rxjs';
+import { Incidence } from 'src/app/models/incidence';
+import { IncidenceService } from 'src/app/services/incidence.service';
+import { finalize} from 'rxjs/operators'
 
 @Component({
   selector: 'app-drawimage',
@@ -11,8 +14,6 @@ import { Observable } from 'rxjs';
   styleUrls: ['./drawimage.page.scss'],
 })
 export class DrawimagePage implements OnInit {
-
-  idDamage: string;
 
   @ViewChild('myCanvas') canvas: any;
   canvasElement: any;
@@ -27,11 +28,14 @@ export class DrawimagePage implements OnInit {
   task: AngularFireUploadTask;
   ref: AngularFireStorageReference;
 
+  incidence: Incidence;
+
 
   constructor(private formBuilder: FormBuilder,
     public damageService: DamagesService,
     public route: Router,
-    private storageAng: AngularFireStorage) {
+    private storageAng: AngularFireStorage,
+    private incidenceService: IncidenceService) {
 
     this.myForm = formBuilder.group({
 
@@ -40,7 +44,7 @@ export class DrawimagePage implements OnInit {
 
   ngOnInit(): void {
 
-    this.idDamage = this.damageService.getId();
+    this.incidence = this.damageService.incidence;
   }
 
   ngAfterViewInit() {
@@ -84,19 +88,56 @@ export class DrawimagePage implements OnInit {
 
   }
 
-  saveCanvasImage() {
-    let name = this.idDamage + '.png';
+  async saveCanvasImage() {
+    let url = '';
+    let name =this.incidence.idInc + '.png';
 
-    var image = new Image();
-    image.src = this.canvasElement.toDataURL("image/png");
-    console.log(image);
-    this.damageService.setImage(image);
+    let dataURL = this.canvasElement.toDataURL('image/png', 0.5);
+    let blob = this.dataURItoBlob(dataURL);
+
     this.ref = this.storageAng.ref(name);
-    this.task = this.storageAng.ref(name).putString(image.src, 'data_url');
-    this.downloadURL = this.ref.getDownloadURL();
-    console.log(this.downloadURL);
-    console.log(this.storageAng);
+    this.task = this.storageAng.ref(name).put(blob);
+
+    this.task
+      .snapshotChanges()
+      .pipe(
+      finalize(() => {
+        this.ref.getDownloadURL().subscribe(data => {
+          url = data;
+          this.incidence.imageName = name;
+          this.incidence.imagePath = url;
+
+          console.log(this.incidence);
+
+          this.incidenceService.updateIncidence(this.incidence);
+          this.damageService.incidence = this.incidence;
+        });
+      })
+      )
+      .subscribe();
+
+    
   }
+
+  dataURItoBlob(dataURI) {
+    // convert base64/URLEncoded data component to raw binary data held in a string
+    var byteString;
+    if (dataURI.split(',')[0].indexOf('base64') >= 0)
+        byteString = atob(dataURI.split(',')[1]);
+    else
+        byteString = unescape(dataURI.split(',')[1]);
+
+    // separate out the mime component
+    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+    // write the bytes of the string to a typed array
+    var ia = new Uint8Array(byteString.length);
+    for (var i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+    }
+
+    return new Blob([ia], {type:mimeString});
+}
 
   handleStart(ev) {
 
@@ -128,8 +169,6 @@ export class DrawimagePage implements OnInit {
     } else {
       this.ctx.fillText(1, x - 6, y + 6);
     }
-
-
 
     this.ctx.closePath();
 

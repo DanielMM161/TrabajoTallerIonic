@@ -39,7 +39,7 @@ export class VehicleService {
     return this.firestore.collection('vehicles').doc(vehicle.enrollment).set(vehicle);
   }
 
-  updateVehicle(vehicle: Vehicle, vehicleId){
+  updateVehicle(vehicle: Vehicle){
     vehicle.year = vehicle.year.substring(0, 4);
     this.firestore.collection('vehicles').doc(vehicle.enrollment).set(vehicle);
   }

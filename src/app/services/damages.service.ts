@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Customer } from '../models/customer';
 import { Vehicle } from '../models/vehicle';
+import { Incidence } from '../models/incidence';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ export class DamagesService {
   private vehicle: Vehicle;
   private damages = [];
   private image = new Image();
+  incidence: Incidence;
 
   constructor() { }
 

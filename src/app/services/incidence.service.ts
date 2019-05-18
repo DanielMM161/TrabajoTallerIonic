@@ -23,7 +23,7 @@ export class IncidenceService {
   }
 
   updateIncidence(incidence: Incidence){
-    return this.firestore.collection('incidents').doc(incidence.idInc).set(incidence);
+    return this.firestore.collection('incidents').doc(incidence.idInc).update(incidence);
   }
 
   deleteIncidence(incidenceId: string){

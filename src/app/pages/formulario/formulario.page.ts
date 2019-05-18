@@ -303,16 +303,16 @@ export class FormularioPage implements OnInit {
            handler: () => {
              switch(number){
                case 1:
-                this.customerService.updateCustomer(this.customer, this.customerDoc);
+                this.customerService.updateCustomer(this.customer);
                 break;
 
               case 2: 
-                this.vehicleService.updateVehicle(this.vehicle, this.vehicleDoc);
+                this.vehicleService.updateVehicle(this.vehicle);
                 break;
 
               case 3:
-                this.customerService.updateCustomer(this.customer, this.customerDoc);
-                this.vehicleService.updateVehicle(this.vehicle, this.vehicleDoc);
+                this.customerService.updateCustomer(this.customer);
+                this.vehicleService.updateVehicle(this.vehicle);
                 break;
 
               default:
@@ -434,6 +434,7 @@ export class FormularioPage implements OnInit {
     this.damagesService.setVehicle(this.vehicle);
 
     this.incidenceService.createIncidence(this.incidence);
+    this.damagesService.incidence = this.incidence;
   }
 
   checkCustomer() : string {
