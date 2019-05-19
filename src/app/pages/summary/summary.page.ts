@@ -3,6 +3,7 @@ import { DrawimagePage } from '../drawimage/drawimage.page';
 import { DamagesService } from 'src/app/services/damages.service';
 import { Customer } from 'src/app/models/customer';
 import { Vehicle } from 'src/app/models/vehicle';
+import { Incidence } from 'src/app/models/incidence';
 
 @Component({
   selector: 'app-summary',
@@ -17,6 +18,7 @@ export class SummaryPage implements OnInit {
   public customer: Customer;
   public vehicle: Vehicle;
   public damages = [];
+  public incidence: Incidence;
 
 
   @ViewChild('myCanvas') canvas: any;
@@ -29,6 +31,7 @@ export class SummaryPage implements OnInit {
     this.customer = this.damageService.getCustomer();
     this.vehicle = this.damageService.getVehicle();
     this.damages = this.damageService.getDamages();
+    this.incidence = this.damageService.incidence;
 
     this.canvasElement = this.canvas.nativeElement;
     this.setBackgroundImage();

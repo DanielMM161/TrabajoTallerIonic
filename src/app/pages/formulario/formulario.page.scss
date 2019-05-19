@@ -23,6 +23,20 @@
 }
 
 ion-card {
-  padding-top: 0px;
-  margin-top: 3px;
+  padding-top: 0px !important;
+  margin-top: 0px !important;
+}
+
+ion-button {
+  padding: 0px !important;
+  margin: 0px !important;
+}
+
+.colorRojo {
+  color: red;
+}
+
+item-select{
+  width:70%;
+  min-width: 40px;
 }

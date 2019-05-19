@@ -1,4 +1,4 @@
-<ion-content padding color="medium">
+<ion-content padding color="medium" heigth="100%">
   <ion-card color="light">
     <ion-card-content ion-fixed>
       <ion-card-title>
@@ -20,7 +20,7 @@
                     style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
                   </ion-input>
                   <div *ngIf="formGroupCustomers.get(c.name).dirty || formGroupCustomers.get(c.name).touched">
-                    <span>{{ getErrorCustomers(c.name)}}</span>
+                    <span class="colorRojo">{{ getErrorCustomers(c.name)}}</span>
                   </div>
                   
                 </div>
@@ -34,7 +34,7 @@
                   [formControlName]="c.name">
                 </ion-input>
                 <div *ngIf="formGroupCustomers.get(c.name).dirty || formGroupCustomers.get(c.name).touched">
-                  <span>{{ getErrorCustomers(c.name)}}</span>
+                  <span class="colorRojo">{{ getErrorCustomers(c.name)}}</span>
                 </div>
   
                   </div>
@@ -56,9 +56,11 @@
         <ion-col size="6">
             <div *ngIf="existCustomer">
                 <ion-item #miSelect >
-                    <ion-select placeholder="Selecciona un coche" (ionChange)="getVehicleCustomer($event)">
+                    <ion-select placeholder="MATRICULA" (ionChange)="getVehicleCustomer($event)" interface="popover">
                       <ion-select-option 
-                       *ngFor="let auxVeh of auxVehicleArray" value="{{auxVeh.data.enrollment}}">{{auxVeh.data.enrollment}} - {{auxVeh.data.brand}} - {{auxVeh.data.model}} </ion-select-option>
+                       *ngFor="let auxVeh of auxVehicleArray" value="{{auxVeh.data.enrollment}}">
+                        <ion-label>{{auxVeh.data.enrollment}} - {{auxVeh.data.brand}} - {{auxVeh.data.model}}</ion-label>
+                      </ion-select-option>
                     </ion-select>
                   </ion-item>
             </div>
@@ -85,24 +87,7 @@
                       </ion-input>
 
                       <div *ngIf="formGroupVehicles.get(cv.name).dirty || formGroupVehicles.get(cv.name).touched"> 
-                      <span>{{getErrorVehicles(cv.name)}}</span>
-                      </div>          
-                  </div>
-
-                  <div *ngSwitchCase="'year'">
-                      <ion-label position="floating">{{ cv.title }}</ion-label>
-
-                        <ion-datetime
-                        [name]="cv.name"
-                        [formControlName]="cv.name"
-                        [(ngModel)]="vehicle[cv.name]" 
-                        display-format="YYYY"
-                        min="1985"
-                        max="2019">
-                      </ion-datetime>
-
-                      <div *ngIf="formGroupVehicles.get(cv.name).dirty || formGroupVehicles.get(cv.name).touched"> 
-                      <span>{{getErrorVehicles(cv.name)}}</span>
+                      <span class="colorRojo">{{getErrorVehicles(cv.name)}}</span>
                       </div>          
                   </div>
 
@@ -117,7 +102,7 @@
                       [(ngModel)]="vehicle[cv.name]">
                     </ion-input>
                     <div *ngIf="formGroupVehicles.get(cv.name).dirty || formGroupVehicles.get(cv.name).touched"> 
-                      <span>{{getErrorVehicles(cv.name)}}</span>
+                      <span class="colorRojo">{{getErrorVehicles(cv.name)}}</span>
                       </div>   
 
                   </div>
