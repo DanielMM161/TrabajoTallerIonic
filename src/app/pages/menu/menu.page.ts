@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { IncidenceService } from 'src/app/services/incidence.service';
 import { DamagesService } from '../../services/damages.service';
 import { refreshDescendantViews, containerRefreshStart } from '@angular/core/src/render3/instructions';
+import { DetailsService } from 'src/app/services/details.service';
 
 @Component({
   selector: 'app-menu',
@@ -19,7 +20,8 @@ export class MenuPage implements OnInit {
   constructor(public AfAuth: AuthService, 
     private router: Router, 
     private incidenceService: IncidenceService,
-    private damagesService: DamagesService) { }
+    private damagesService: DamagesService,
+    private detailsService: DetailsService) { }
 
   ngOnInit( ) {
     this.incidenceService.getAllIncidence().subscribe(data => {
@@ -66,6 +68,11 @@ export class MenuPage implements OnInit {
         break;
     }
 
+  }
+
+  deleteIncidence(inc: Incidence){
+    this.incidenceService.deleteIncidence(inc.idInc);
+    this.detailsService.deleteDetails(inc.idInc);
   }
 
 }

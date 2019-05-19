@@ -84,7 +84,7 @@ export class DrawimagePage implements OnInit {
   returnMenu() {
     this.goMenu = true;
     this.damageService.setDamages(this.averias);
-    //this.saveCanvasImage();
+    this.saveCanvasImage();
     this.route.navigate(['/menu']);
   }
 

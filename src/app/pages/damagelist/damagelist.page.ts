@@ -41,7 +41,6 @@ export class DamagelistPage implements OnInit {
 
         this.damages = damSnapshot.payload.get('damages');
         this.internDamage = damSnapshot.payload.get('internDamages');
-        console.log(this.damageService.details);
       });
     } else {
       this.damages = this.damageService.getDamages();

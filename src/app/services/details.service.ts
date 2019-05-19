@@ -29,7 +29,7 @@ export class DetailsService {
     this.detailsService.collection('details').doc(details.id).set(details);
   }
 
-  updateInterDamages(details: Details) {
-    return this.detailsService.collection('details').doc(details.id).set(details);
+  deleteDetails(detailId: string){
+    this.detailsService.doc('details/' + detailId).delete();
   }
 }

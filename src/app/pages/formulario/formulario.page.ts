@@ -53,7 +53,8 @@ export class FormularioPage implements OnInit {
     idCar: '', 
     state: '',
     imageName: '',
-    imagePath: ''
+    imagePath: '',
+    date: ''
   };
 
   existCustomer: Boolean = false;
@@ -432,6 +433,7 @@ export class FormularioPage implements OnInit {
     this.damagesService.setId(this.incidence.idInc);
     this.damagesService.setCustomer(this.customer);
     this.damagesService.setVehicle(this.vehicle);
+    this.incidence.date = new Date().toLocaleDateString();
 
     this.incidenceService.createIncidence(this.incidence);
     this.damagesService.incidence = this.incidence;
