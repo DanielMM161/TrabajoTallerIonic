@@ -427,7 +427,7 @@ export class FormularioPage implements OnInit {
   async addIncidence () {
     this.incidence.idInc = String(this.incidenceArray.length + 1);
     this.incidence.idCar = this.vehicle.enrollment;
-    this.incidence.state = 'peritando';
+    this.incidence.state = 'drawImage';
 
     this.damagesService.setId(this.incidence.idInc);
     this.damagesService.setCustomer(this.customer);
@@ -482,7 +482,7 @@ export class FormularioPage implements OnInit {
   }
 
   continue(){
-    console.log(this.customerArray);
+    //console.log(this.customerArray);
     if(this.checkEmptyCustomer() && this.checkEmptyVehicle()){
       let opcionC: string = this.checkCustomer();
       let numberOp: number = 0;
@@ -559,7 +559,6 @@ export class FormularioPage implements OnInit {
      for (let auxV of this.auxVehicleArray) {
        console.log(String(event.detail.value.length), auxV.data.enrollment.length);
       if(event.detail.value == auxV.data.enrollment) {
-        console.log('entra');
          this.vehicle = auxV.data;
        }
     }

@@ -7,6 +7,8 @@ import { Observable } from 'rxjs';
 import { Incidence } from 'src/app/models/incidence';
 import { IncidenceService } from 'src/app/services/incidence.service';
 import { finalize} from 'rxjs/operators'
+import { DetailsService } from '../../services/details.service';
+import { Details } from '../../models/details';
 
 @Component({
   selector: 'app-drawimage',
@@ -14,7 +16,7 @@ import { finalize} from 'rxjs/operators'
   styleUrls: ['./drawimage.page.scss'],
 })
 export class DrawimagePage implements OnInit {
-
+  //Atributes
   @ViewChild('myCanvas') canvas: any;
   canvasElement: any;
   startX: any;
@@ -27,8 +29,14 @@ export class DrawimagePage implements OnInit {
   downloadURL: Observable<any>;
   task: AngularFireUploadTask;
   ref: AngularFireStorageReference;
-
   incidence: Incidence;
+  details: Details = {
+    id: '',
+    idIncidence: '',
+    damages: [],
+    internDamages: []
+  };
+  goMenu: Boolean = false;
 
 
   constructor(private formBuilder: FormBuilder,
@@ -43,8 +51,7 @@ export class DrawimagePage implements OnInit {
   }
 
   ngOnInit(): void {
-
-    this.incidence = this.damageService.incidence;
+    this.incidence = this.damageService.getIncidence();
   }
 
   ngAfterViewInit() {
@@ -62,30 +69,44 @@ export class DrawimagePage implements OnInit {
 
   goDamageList() {
     this.damageService.setDamages(this.averias);
+    this.insertDamagesDetails();
     this.saveCanvasImage();
     this.route.navigate(['/damagelist']);
   }
 
-  async setBackgroundImage(context) {
+  insertDamagesDetails() {
+    this.damageService.details.id = this.incidence.idInc;
+    this.damageService.details.idIncidence = this.incidence.idInc;
+    this.damageService.details.damages = this.averias;
+    this.damageService.createDetails(this.damageService.details);
+  }
 
+  returnMenu() {
+    this.goMenu = true;
+    this.damageService.setDamages(this.averias);
+    //this.saveCanvasImage();
+    this.route.navigate(['/menu']);
+  }
+
+  /**
+   * Si el imagePath tiene valor me carga la imagen correspondiente de la incidencia
+   * @param context 
+   */
+  async setBackgroundImage(context) {
     var background = new Image();
     background.src = "../../assets/img/cocheTemplate.png";
-    background.onload = await function () {
-      context.drawImage(background, 0, 0, document.body.clientWidth - 6, (document.body.clientHeight * 3) / 7);
-    }
+      background.onload = await function () {
+        context.drawImage(background, 0, 0, document.body.clientWidth - 6, (document.body.clientHeight * 3) / 7);
+      }
 
   }
 
   setNewBack(context) {
     var background = new Image();
-
-
     background.onload = function () {
       context.drawImage(background, 0, 0, document.body.clientWidth - 6, (document.body.clientHeight * 3) / 7);
     }
     background.src = "../../assets/img/coche.png";
-
-
   }
 
   async saveCanvasImage() {
@@ -106,17 +127,20 @@ export class DrawimagePage implements OnInit {
           url = data;
           this.incidence.imageName = name;
           this.incidence.imagePath = url;
-
-          console.log(this.incidence);
-
+          if (this.goMenu) {
+            /**Si en la vista pulsas el boton volver te setea el estado de la incidencia a drawImage, si
+             * es el de continuar de continuar a damageList para que luego en el menu sepa hacia donde volver.
+             */
+            this.incidence.state = 'drawImage';
+          } else {
+            this.incidence.state = 'damageList';
+          }
           this.incidenceService.updateIncidence(this.incidence);
           this.damageService.incidence = this.incidence;
         });
       })
       )
       .subscribe();
-
-    
   }
 
   dataURItoBlob(dataURI) {
@@ -149,8 +173,6 @@ export class DrawimagePage implements OnInit {
 
     this.addControl();
     this.drawCircle(this.startX, this.startY, this.touches.length);
-
-
   }
 
   drawCircle(x, y, id?) {
@@ -208,9 +230,6 @@ export class DrawimagePage implements OnInit {
   }
 
   removeControl(control) {
-
-    console.log(control);
-    
     this.myForm.removeControl(control.key);
 
     for (let i = 0; i < this.touches.length; i++) {
@@ -220,8 +239,7 @@ export class DrawimagePage implements OnInit {
         this.averias.splice(i, 1);
         this.ctx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
         i--;
-      }
-      else {
+      } else {
         this.touches[i].id = i;
       }
     }
@@ -233,10 +251,6 @@ export class DrawimagePage implements OnInit {
         this.drawCircle(this.touches[i].x, this.touches[i].y, i + 1);
       }
     }, 350);
-    console.log('touches', this.touches)
-    console.log('averias', this.averias)
-
-
   }
 
   checkValue(control: string): boolean {
