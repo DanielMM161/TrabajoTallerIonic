@@ -32,7 +32,6 @@ export class DrawimagePage implements OnInit {
   incidence: Incidence;
   details: Details = {
     id: '',
-    idIncidence: '',
     damages: [],
     internDamages: []
   };
@@ -41,6 +40,7 @@ export class DrawimagePage implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
     public damageService: DamagesService,
+    public detailsService: DetailsService,
     public route: Router,
     private storageAng: AngularFireStorage,
     private incidenceService: IncidenceService) {
@@ -58,7 +58,7 @@ export class DrawimagePage implements OnInit {
 
     console.log(this.canvas);
     this.canvasElement = this.canvas.nativeElement;
-    this.canvasElement.style.background = "url(../../assets/img/coche.png)";
+    this.canvasElement.style.background = "url(../../assets/img/cocheTemplate.png)";
     this.canvasElement.style.backgroundRepeat = "no-repeat";
     this.canvasElement.style.backgroundSize = "100% 100%";
     this.canvasElement.width = document.body.clientWidth - 6;
@@ -76,9 +76,8 @@ export class DrawimagePage implements OnInit {
 
   insertDamagesDetails() {
     this.damageService.details.id = this.incidence.idInc;
-    this.damageService.details.idIncidence = this.incidence.idInc;
     this.damageService.details.damages = this.averias;
-    this.damageService.createDetails(this.damageService.details);
+    this.detailsService.createDetails(this.damageService.details);
   }
 
   returnMenu() {
@@ -99,14 +98,6 @@ export class DrawimagePage implements OnInit {
         context.drawImage(background, 0, 0, document.body.clientWidth - 6, (document.body.clientHeight * 3) / 7);
       }
 
-  }
-
-  setNewBack(context) {
-    var background = new Image();
-    background.onload = function () {
-      context.drawImage(background, 0, 0, document.body.clientWidth - 6, (document.body.clientHeight * 3) / 7);
-    }
-    background.src = "../../assets/img/coche.png";
   }
 
   async saveCanvasImage() {
@@ -177,7 +168,7 @@ export class DrawimagePage implements OnInit {
 
   drawCircle(x, y, id?) {
     this.ctx.beginPath();
-    this.ctx.arc(x, y, 40, 0, 2 * Math.PI);
+    this.ctx.arc(x, y, 35, 0, 2 * Math.PI);
     this.ctx.lineWidth = 3;
     this.ctx.stroke();
     this.ctx.font = "30px sans-serif";

@@ -125,9 +125,7 @@ export class FormularioPage implements OnInit {
   /*Dentro del constructor inicializo mi FormGroup(es un conjunto de form Control) y le aplico ciertos
   parametros para validar*/
   constructor(private route: ActivatedRoute,
-    private nav: NavController, 
     private customerService: CustomerService,
-    private loadingController: LoadingController,
     private formBuilder: FormBuilder,
     private vehicleService: VehicleService,
     private dataService: DataService,
@@ -430,7 +428,7 @@ export class FormularioPage implements OnInit {
     this.incidence.idCar = this.vehicle.enrollment;
     this.incidence.state = 'drawImage';
 
-    this.damagesService.setId(this.incidence.idInc);
+    this.damagesService.setIncidence(this.incidence);
     this.damagesService.setCustomer(this.customer);
     this.damagesService.setVehicle(this.vehicle);
     this.incidence.date = new Date().toLocaleDateString();

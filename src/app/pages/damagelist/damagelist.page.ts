@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { DamagesService } from 'src/app/services/damages.service';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { DetailsService } from '../../services/details.service';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-damagelist',
@@ -16,13 +16,22 @@ export class DamagelistPage implements OnInit {
 
   public count = 0;
   public myForm: FormGroup;
+  public forms = [];
 
   constructor(public damageService: DamagesService, 
-    private formBuilder: FormBuilder, 
-    private route: Router) { 
-    this.myForm = formBuilder.group({
+    public detailsService: DetailsService,
+    private formBuilder: FormBuilder,
+    private navCtrl:NavController) { 
 
-    });
+    this.myForm = this.formBuilder.group({
+
+        });
+
+    this.damages = [];
+    this.internDamage = [];
+    if(!this.damageService.viewDamageList){      
+    this.damageService.details.internDamages.length = 0;
+    }
   }
 
   ngOnInit() {
@@ -30,17 +39,19 @@ export class DamagelistPage implements OnInit {
      * hemos accedido seleccionando el item del menu y si esta a false es que se ha accedido
      * desde la vista drawImage al darle a continuar.
      */
-    this.damages = [];
-    this.internDamage = [];
+    
     if (this.damageService.getViewDamageList) {
-      this.damageService.getDetailDB(this.damageService.incidence.idInc).subscribe( (damSnapshot) => {
+      this.detailsService.getDetail(this.damageService.incidence.idInc).subscribe( (damSnapshot) => {
         this.damageService.details.id = damSnapshot.payload.get('id');
-        this.damageService.details.idIncidence = damSnapshot.payload.get('idIncidence');
         this.damageService.details.damages = damSnapshot.payload.get('damages');
         this.damageService.details.internDamages = damSnapshot.payload.get('internDamages');
 
         this.damages = damSnapshot.payload.get('damages');
         this.internDamage = damSnapshot.payload.get('internDamages');
+        
+        for(let c of this.internDamage){
+          this.addControl();
+        }
       });
     } else {
       this.damages = this.damageService.getDamages();
@@ -48,10 +59,18 @@ export class DamagelistPage implements OnInit {
   }
 
   addControl(){
-    if(this.damages.length < 10){
-      this.myForm.addControl('0'+(this.internDamage.length), new FormControl('', Validators.required));
+    if(this.count < 10){
+      this.myForm.addControl('0'+(this.count), new FormControl('', Validators.required));
+      this.forms.push({
+        "form": '0'+(this.count)
+      })
+      this.count ++;
     }else{
       this.myForm.addControl(String(this.internDamage.length), new FormControl('', Validators.required));
+      this.forms.push({
+        "form": this.count
+      })
+      this.count ++;
     }    
 
     console.log(this.internDamage);
@@ -59,19 +78,29 @@ export class DamagelistPage implements OnInit {
 
   removeControl(control){
     this.myForm.removeControl(control.key);
-    this.internDamage.splice(parseInt(control.key), 1);
+    
+    for (let i = 0; i < this.forms.length; i++) {
+      if(this.forms[i].form == control.key){
+        this.internDamage.splice(i, 1);
+        this.forms.splice(i, 1);
+      }
+    }    
   }
 
   goSummary( ){
     this.addInternalDamages();
     this.damageService.setDamages(this.damages.concat(this.internDamage));
-    this.route.navigate(['/summary']);
+    this.navCtrl.navigateForward(['/summary']);
     console.log(this.damages);
   }
 
   addInternalDamages() {
     this.damageService.details.internDamages = this.internDamage;
-    this.damageService.updateInterDamages(this.damageService.details);
+    this.detailsService.updateDetails(this.damageService.details);
+  }
+
+  comeback(){
+    this.navCtrl.pop();
   }
 
 }

@@ -2,11 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service'
 import { Router} from '@angular/router'
 import { Incidence } from 'src/app/models/incidence';
-import { Observable } from 'rxjs';
 import { IncidenceService } from 'src/app/services/incidence.service';
 import { DamagesService } from '../../services/damages.service';
-import { refreshDescendantViews, containerRefreshStart } from '@angular/core/src/render3/instructions';
 import { DetailsService } from 'src/app/services/details.service';
+import { VehicleService } from 'src/app/services/vehicle.service';
 
 @Component({
   selector: 'app-menu',
@@ -21,7 +20,10 @@ export class MenuPage implements OnInit {
     private router: Router, 
     private incidenceService: IncidenceService,
     private damagesService: DamagesService,
-    private detailsService: DetailsService) { }
+    private detailsService: DetailsService, 
+    private vehicleService: VehicleService) { 
+      this.damagesService.viewDamageList = false;
+    }
 
   ngOnInit( ) {
     this.incidenceService.getAllIncidence().subscribe(data => {
@@ -40,10 +42,7 @@ export class MenuPage implements OnInit {
 
   public IrForm() {
     this.router.navigate(['/formulario']);
-  }
-
-  public IrDraw() {
-    this.router.navigate(['/drawimage']);
+    this.damagesService = new DamagesService();
   }
 
   /**
@@ -55,16 +54,18 @@ export class MenuPage implements OnInit {
       case 'drawImage':
           this.damagesService.setIncidence(inc);
           this.router.navigate(['/drawimage']);
+          this.vehicleService.getVehicle(inc.idCar).subscribe((veh) =>{
+            this.damagesService.vehicle = veh.payload.data();
+          });
         break;
 
       case 'damageList':
           this.damagesService.setIncidence(inc);
           this.damagesService.setViewDamageList(true);
           this.router.navigate(['/damagelist']);
-        break;
-
-      case 'drawImage':
-
+          this.vehicleService.getVehicle(inc.idCar).subscribe((veh) =>{
+            this.damagesService.vehicle = veh.payload.data();
+          });
         break;
     }
 

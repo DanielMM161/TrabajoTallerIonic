@@ -1,9 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { DrawimagePage } from '../drawimage/drawimage.page';
 import { DamagesService } from 'src/app/services/damages.service';
-import { Customer } from 'src/app/models/customer';
-import { Vehicle } from 'src/app/models/vehicle';
 import { Incidence } from 'src/app/models/incidence';
+import { VehicleService } from 'src/app/services/vehicle.service';
+import { CustomerService } from 'src/app/services/customer.service';
+import { IncidenceService } from 'src/app/services/incidence.service';
+import { Router } from '@angular/router';
+import { AlertController } from '@ionic/angular';
+import { DetailsService } from 'src/app/services/details.service';
 
 @Component({
   selector: 'app-summary',
@@ -12,32 +15,51 @@ import { Incidence } from 'src/app/models/incidence';
 })
 export class SummaryPage implements OnInit {
 
-  constructor(private damageService: DamagesService) { }
-
+  
   public id: string;
-  public customer: Customer;
-  public vehicle: Vehicle;
+  public customer: any;
+  public vehicle: any;
   public damages = [];
   public incidence: Incidence;
-
 
   @ViewChild('myCanvas') canvas: any;
   canvasElement: any;
   ctx;
+  x: any;
 
-  ngOnInit() {
+  constructor(private damageService: DamagesService,
+              private detailService: DetailsService,
+              private vehicleService: VehicleService,
+              private customerService: CustomerService,
+              private incidenceService: IncidenceService,
+              private router: Router,
+              private alertCtrl: AlertController) {
+    
+  }
 
-    this.id = this.damageService.getId();
-    this.customer = this.damageService.getCustomer();
-    this.vehicle = this.damageService.getVehicle();
-    this.damages = this.damageService.getDamages();
-    this.incidence = this.damageService.incidence;
+  ngOnInit() {    
 
     this.canvasElement = this.canvas.nativeElement;
     this.setBackgroundImage();
     this.canvasElement.width = document.body.clientWidth*4/ 5;
     this.canvasElement.height = (document.body.clientHeight*4)/12;
     this.ctx = this.canvasElement.getContext('2d');
+
+    this.damages = this.damageService.getDamages();
+    this.incidence = this.damageService.incidence;
+
+
+    this.vehicleService.getVehicle(this.incidence.idCar).subscribe((veh) =>{
+       this.x = veh.payload.data()
+       console.log(this.x);
+    });
+
+    setTimeout(() => {
+      this.customerService.getCustomer(this.x.owner).subscribe((cus) =>{
+        this.customer = cus.payload.data()
+        console.log(this.customer);
+      })
+    }, 350);
     
   }
 
@@ -52,6 +74,34 @@ export class SummaryPage implements OnInit {
     }
   }
 
+  async deleteAndCome(){
+    const alert = await this.alertCtrl.create({
+      header: 'Desea eliminar la incidencia?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {
+            console.log('Confirm Cancel: blah');
+          }
+        }, {
+          text: 'Eliminar',
+          handler: () => {
+            this.incidenceService.deleteIncidence(this.incidence.idInc);
+            this.detailService.deleteDetails(this.incidence.idInc);
+            this.router.navigate(['/menu']);
+          }
+        }
+      ]});    
+
+      await alert.present();
+  }
+
+  cancelAndCome(){
+    this.damageService = new DamagesService();
+    this.router.navigate(['/menu']);
+  }
 
 
 }

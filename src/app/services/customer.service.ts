@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreDocument } from 'angularfire2/firestore';
+import { AngularFirestore } from 'angularfire2/firestore';
 import { Customer} from '../models/customer';
 
 @Injectable({
@@ -13,8 +13,8 @@ export class CustomerService {
     return this.firestore.collection('customers').snapshotChanges();
   }
 
-  getCustomer(customer: Customer){
-    return this.firestore.collection('customers').doc(customer.nif).snapshotChanges();
+  getCustomer(nif: any){
+    return this.firestore.collection('customers').doc(nif).snapshotChanges();
   }
 
   createCustomer(customer: Customer){

@@ -16,8 +16,8 @@ export class DetailsService {
     return this.detailsService.collection('details').snapshotChanges();
   }
 
-  getDetail(details: Details){
-    return this.detailsService.collection('details').doc(details.id).snapshotChanges();
+  getDetail(id: any){
+    return this.detailsService.collection('details').doc(id).snapshotChanges();
   }
 
   createDetails(details: Details){

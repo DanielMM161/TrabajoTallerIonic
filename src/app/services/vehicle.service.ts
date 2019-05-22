@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore } from 'angularfire2/firestore';
 import { Vehicle } from '../models/vehicle';
 
 
@@ -30,8 +30,8 @@ export class VehicleService {
     return this.firestore.collection('vehicles').snapshotChanges();
   }
 
-  getVehicle(vehicle: Vehicle){
-    return this.firestore.collection('vehicles').doc(vehicle.enrollment).snapshotChanges();
+  getVehicle(enrollment){
+    return this.firestore.collection('vehicles').doc(enrollment).snapshotChanges();
   }
 
   createVehicle(vehicle: Vehicle){
