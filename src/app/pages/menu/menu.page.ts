@@ -22,7 +22,7 @@ export class MenuPage implements OnInit {
     private damagesService: DamagesService,
     private detailsService: DetailsService, 
     private vehicleService: VehicleService) { 
-      this.damagesService.viewDamageList = false;
+      
     }
 
   ngOnInit( ) {
@@ -41,6 +41,11 @@ export class MenuPage implements OnInit {
   }
 
   public IrForm() {
+    
+    this.damagesService.viewDamageList = false;
+
+    console.log(this.damagesService);
+    
     this.router.navigate(['/formulario']);
     this.damagesService = new DamagesService();
   }
@@ -50,6 +55,9 @@ export class MenuPage implements OnInit {
    * @param inc 
    */
   goIncident(inc: Incidence) {
+    
+    this.damagesService.viewDamageList = false;
+    
     switch (inc.state) {
       case 'drawImage':
           this.damagesService.setIncidence(inc);

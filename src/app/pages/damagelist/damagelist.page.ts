@@ -40,7 +40,7 @@ export class DamagelistPage implements OnInit {
      * desde la vista drawImage al darle a continuar.
      */
     
-    if (this.damageService.getViewDamageList) {
+    if (this.damageService.getViewDamageList()) {
       this.detailsService.getDetail(this.damageService.incidence.idInc).subscribe( (damSnapshot) => {
         this.damageService.details.id = damSnapshot.payload.get('id');
         this.damageService.details.damages = damSnapshot.payload.get('damages');
@@ -78,7 +78,7 @@ export class DamagelistPage implements OnInit {
 
   removeControl(control){
     this.myForm.removeControl(control.key);
-    
+
     for (let i = 0; i < this.forms.length; i++) {
       if(this.forms[i].form == control.key){
         this.internDamage.splice(i, 1);

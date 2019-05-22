@@ -20,12 +20,12 @@ export class DamagesService {
     internDamages: []
   };
   
-  viewDamageList: Boolean = false;
+  viewDamageList = false;
 
   constructor() {
    }
 
-  setViewDamageList(res: Boolean){
+  setViewDamageList(res){
     this.viewDamageList = res;
   }
 
