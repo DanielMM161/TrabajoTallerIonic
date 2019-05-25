@@ -100,6 +100,7 @@ export class DamagelistPage implements OnInit {
   }
 
   comeback(){
+    this.damageService.incidence.idInc = '';
     this.navCtrl.pop();
   }
 

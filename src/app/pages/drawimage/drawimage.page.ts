@@ -9,6 +9,7 @@ import { IncidenceService } from 'src/app/services/incidence.service';
 import { finalize} from 'rxjs/operators'
 import { DetailsService } from '../../services/details.service';
 import { Details } from '../../models/details';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-drawimage',
@@ -41,7 +42,7 @@ export class DrawimagePage implements OnInit {
   constructor(private formBuilder: FormBuilder,
     public damageService: DamagesService,
     public detailsService: DetailsService,
-    public route: Router,
+    private navCtrl: NavController,
     private storageAng: AngularFireStorage,
     private incidenceService: IncidenceService) {
 
@@ -71,7 +72,7 @@ export class DrawimagePage implements OnInit {
     this.damageService.setDamages(this.averias);
     this.insertDamagesDetails();
     this.saveCanvasImage();
-    this.route.navigate(['/damagelist']);
+    this.navCtrl.navigateForward(['/damagelist']);
   }
 
   insertDamagesDetails() {
@@ -84,7 +85,8 @@ export class DrawimagePage implements OnInit {
     this.goMenu = true;
     this.damageService.setDamages(this.averias);
     this.saveCanvasImage();
-    this.route.navigate(['/menu']);
+    this.damageService.incidence.idInc = '';
+    this.navCtrl.pop();
   }
 
   /**

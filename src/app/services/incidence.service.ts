@@ -29,4 +29,5 @@ export class IncidenceService {
   deleteIncidence(incidenceId: string){
     this.firestore.doc('incidents/' + incidenceId).delete();
   }
+  
 }

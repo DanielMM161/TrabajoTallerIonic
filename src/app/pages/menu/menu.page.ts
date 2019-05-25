@@ -6,6 +6,7 @@ import { IncidenceService } from 'src/app/services/incidence.service';
 import { DamagesService } from '../../services/damages.service';
 import { DetailsService } from 'src/app/services/details.service';
 import { VehicleService } from 'src/app/services/vehicle.service';
+import { AngularFirestore } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-menu',
@@ -21,11 +22,13 @@ export class MenuPage implements OnInit {
     private incidenceService: IncidenceService,
     private damagesService: DamagesService,
     private detailsService: DetailsService, 
-    private vehicleService: VehicleService) { 
+    private vehicleService: VehicleService,
+    public db: AngularFirestore) { 
       
     }
 
   ngOnInit( ) {
+
     this.incidenceService.getAllIncidence().subscribe(data => {
       this.incidenceArray = data.map(e => {
         return {
@@ -56,7 +59,7 @@ export class MenuPage implements OnInit {
    */
   goIncident(inc: Incidence) {
     
-    this.damagesService.viewDamageList = false;
+    this.damagesService.viewDamageList = false;    
     
     switch (inc.state) {
       case 'drawImage':

@@ -7,6 +7,7 @@ import { IncidenceService } from 'src/app/services/incidence.service';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { DetailsService } from 'src/app/services/details.service';
+import { DamageFService } from 'src/app/services/damage-f.service';
 
 @Component({
   selector: 'app-summary',
@@ -33,7 +34,8 @@ export class SummaryPage implements OnInit {
               private customerService: CustomerService,
               private incidenceService: IncidenceService,
               private router: Router,
-              private alertCtrl: AlertController) {
+              private alertCtrl: AlertController, 
+              private damageFService: DamageFService) {
     
   }
 
@@ -60,6 +62,8 @@ export class SummaryPage implements OnInit {
         console.log(this.customer);
       })
     }, 350);
+
+    console.log(this.incidence);
     
   }
 
@@ -99,7 +103,22 @@ export class SummaryPage implements OnInit {
   }
 
   cancelAndCome(){
-    this.damageService = new DamagesService();
+    this.damageService.incidence.idInc = '';
+    this.router.navigate(['/menu']);
+  }
+
+  okey(){
+
+    let damage = {
+      'id': this.incidence.idInc,
+      'car': this.incidence.idCar,
+      'date': this.incidence.date,
+      'image': this.incidence.imageName,
+      'imagePath': this.incidence.imagePath
+    };
+
+    this.damageFService.createIncidence(damage);
+    this.incidenceService.deleteIncidence(this.incidence.idInc);
     this.router.navigate(['/menu']);
   }
 

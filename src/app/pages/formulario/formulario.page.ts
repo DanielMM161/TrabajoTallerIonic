@@ -132,7 +132,7 @@ export class FormularioPage implements OnInit {
     public alertController: AlertController,
     public incidenceService: IncidenceService,
     public damagesService: DamagesService,
-    public router: Router) {
+    public navCtrl: NavController) {
       this.buildFormGroupCustomers();
       this.buildFormGroupVehicles();
   }
@@ -318,10 +318,6 @@ export class FormularioPage implements OnInit {
                 console.log("modificar fallo"); 
                 break;
              }
-             
-             this.addIncidence();
-
-             this.router.navigate(['/drawimage']);
            }
          }
        ]
@@ -523,10 +519,11 @@ export class FormularioPage implements OnInit {
       if (numberOp != 0) {
         this.checkUpdate(numberOp);
 
-      } else {
-        this.addIncidence();
-        this.router.navigate(['/drawimage']);
-      }    
+      } 
+
+      this.addIncidence();
+      this.navCtrl.navigateForward(['/drawimage']);
+         
     }
   }
 
@@ -602,6 +599,10 @@ export class FormularioPage implements OnInit {
         }
     }
 
+  }
+
+  comeBack(){
+    this.navCtrl.pop();
   }
 }
 
